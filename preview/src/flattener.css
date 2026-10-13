@@ -1,0 +1,61 @@
+/* mO2FLATTENER — transcription de DARK_THEME_QSS et des styles en ligne de MainWindow (valeurs Socle). */
+.fl-window { max-width: 1080px; height: min(948px, calc(100vh - var(--size-bar) - 48px)); min-height: 788px; background: var(--bg-sunken); }
+.fl-root { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; padding: 12px 14px; color: var(--text); font-size: 13px; }
+
+.fl-header { flex: none; display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 18px; background: var(--surface); border-radius: var(--radius-md); }
+.fl-bolt { color: var(--action); font-size: 22px; font-weight: 700; margin-right: -2px; }
+.fl-app-title { margin: 0; color: var(--text-strong); font-size: 20px; line-height: 26px; font-weight: 800; letter-spacing: .3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-spacer { flex: 1; }
+.fl-status { color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+.fl-pipe { color: var(--control-strong); }
+
+.fl-card { flex: none; display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; background: var(--surface); border-radius: var(--radius-md); }
+.fl-card-title { margin: 0; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--accent-text); letter-spacing: .5px; }
+
+.fl-row { display: flex; align-items: center; gap: 8px; }
+.fl-row--checks { gap: 24px; }
+.fl-label { flex: none; width: 190px; font-weight: 500; }
+
+.fl-input, .fl-combo { flex: 1; min-width: 0; height: 34px; padding: 0 12px; background: var(--bg-sunken); color: var(--text-strong); border: 0; border-radius: 5px; font: 13px/18px var(--font-sans); }
+.fl-input:focus { outline: none; background: var(--bg); }
+.fl-input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.fl-input:disabled { color: var(--text-disabled); }
+.fl-combo { appearance: none; cursor: pointer; padding-right: 30px;
+  background: var(--bg-sunken) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%23aaaaaa' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center / 12px; }
+.fl-combo:hover { background-color: var(--bg); }
+.fl-combo--lang { flex: none; height: 30px; }
+.fl-combo option { background: var(--bg); color: var(--text-strong); }
+
+.fl-browse { flex: none; width: 110px; height: 34px; background: var(--control); color: var(--text-strong); border: 1px solid var(--control-strong); border-radius: 5px; font: 600 13px/18px var(--font-sans); cursor: pointer; transition: background-color .15s; }
+.fl-browse:hover:not(:disabled) { background: var(--control-hover); }
+.fl-browse:active:not(:disabled) { background: var(--control-pressed); }
+.fl-browse:disabled { color: var(--text-disabled); border-color: var(--border); cursor: default; }
+
+/* QCheckBox : indicateur 18px, plein bleu une fois coché */
+.fl-check { display: inline-flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer; }
+.fl-check--fixed { flex: none; width: 240px; }
+.fl-check input { appearance: none; flex: none; width: 18px; height: 18px; margin: 0; background: var(--bg-sunken); border: 1px solid var(--control-hover); border-radius: 3px; cursor: pointer; }
+.fl-check input:checked { background: var(--accent-fill); border-color: var(--accent); }
+
+.fl-actions { flex: none; display: flex; justify-content: center; gap: 8px; }
+.fl-run, .fl-stop { height: 48px; border-radius: var(--radius-md); font: 700 14px/20px var(--font-sans); cursor: pointer; transition: background-color .15s; }
+.fl-run { padding: 0 34px; background: var(--action); color: var(--bg-sunken); border: 0; }
+.fl-run:hover:not(:disabled) { background: var(--action-hover); }
+.fl-run:active:not(:disabled) { background: var(--action-pressed); }
+.fl-run:disabled { opacity: var(--opacity-disabled); cursor: default; }
+.fl-stop { padding: 0 28px; background: var(--danger-bg); color: var(--danger-soft); border: 1px solid var(--danger-border); }
+.fl-stop:hover:not(:disabled) { background: #5a2222; }
+.fl-stop:active:not(:disabled) { background: #3a1515; }
+.fl-stop:disabled { background: var(--surface-raised); color: var(--text-disabled); border-color: var(--border); cursor: default; }
+
+.fl-progress { flex: none; height: 8px; background: var(--bg-sunken); border-radius: 3px; overflow: hidden; }
+.fl-progress__chunk { width: 0; height: 100%; background: var(--action); border-radius: 3px; transition: width .12s linear; }
+
+.fl-card--log { flex: 1; min-height: 120px; gap: 8px; padding: 12px 16px; }
+.fl-log-title { margin: 0; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--text-muted); letter-spacing: .5px; }
+.fl-log { flex: 1; min-height: 0; overflow: auto; padding: 10px; background: var(--bg-sunken); border-radius: 5px; color: var(--text); font: 12px/1.45 Menlo, monospace; white-space: pre-wrap; word-break: break-all; }
+.fl-log p { margin: 0; }
+
+/* Boutons des QMessageBox : QPushButton par défaut de l'appli */
+.fl-msgbtn { min-width: 80px; padding: 7px 16px; background: var(--surface-hover); color: var(--text-strong); border: 0; border-radius: 5px; font: 500 13px/18px var(--font-sans); cursor: pointer; }
+.fl-msgbtn:hover { background: var(--control); }

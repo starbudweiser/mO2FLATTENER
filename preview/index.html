@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mO2FLATTENER – Preview</title>
+  <link rel="icon" href="/icon.png">
+</head>
+<body>
+  <header class="pv-bar">
+    <span class="pv-bar__title">mO2FLATTENER</span>
+    <span class="pv-bar__meta">src/mo2_flattener_gui.py</span>
+    <span class="pv-bar__spacer"></span>
+    <label class="pv-check"><input type="checkbox" id="pv-error"> Simuler une erreur de copie</label>
+    <button class="pv-btn" id="pv-fill">Remplir la démo</button>
+    <button class="pv-btn" id="pv-reset">Réinitialiser</button>
+  </header>
+  <div class="pv-stage">
+    <div class="mac-window fl-window">
+      <div class="mac-titlebar"><div class="mac-dots"><i></i><i></i><i></i></div><span>mO2FLATTENER</span></div>
+      <div class="mac-body" id="host">
+        <main class="fl-root">
+          <header class="fl-header">
+            <span class="fl-bolt" aria-hidden="true">⚡</span>
+            <h1 class="fl-app-title" id="title"></h1>
+            <span class="fl-spacer"></span>
+            <span class="fl-status" id="status" role="status"></span>
+            <span class="fl-pipe" aria-hidden="true">|</span>
+            <select class="fl-combo fl-combo--lang" id="lang" aria-label="Langue"></select>
+          </header>
+
+          <section class="fl-card">
+            <h2 class="fl-card-title" id="c1"></h2>
+            <div class="fl-row">
+              <label class="fl-label" for="mo2" id="lbl-mo2"></label>
+              <input class="fl-input" id="mo2" type="text" spellcheck="false">
+              <button class="fl-browse" id="b-mo2"></button>
+            </div>
+            <div class="fl-row">
+              <label class="fl-label" for="profile" id="lbl-prof"></label>
+              <select class="fl-combo" id="profile"></select>
+            </div>
+            <div class="fl-row">
+              <label class="fl-label" for="modlist" id="lbl-modl"></label>
+              <input class="fl-input" id="modlist" type="text" spellcheck="false">
+              <button class="fl-browse" id="b-modl"></button>
+            </div>
+            <div class="fl-row">
+              <label class="fl-label" for="dest" id="lbl-dest"></label>
+              <input class="fl-input" id="dest" type="text" spellcheck="false">
+              <button class="fl-browse" id="b-dest"></button>
+            </div>
+            <div class="fl-row fl-row--checks">
+              <label class="fl-check"><input type="checkbox" id="hardlinks"><span id="t-hardlinks"></span></label>
+              <label class="fl-check"><input type="checkbox" id="stoperr" checked><span id="t-stoperr"></span></label>
+            </div>
+          </section>
+
+          <section class="fl-card">
+            <h2 class="fl-card-title" id="c2"></h2>
+            <div class="fl-row">
+              <label class="fl-check fl-check--fixed"><input type="checkbox" id="cplugins" checked><span id="t-plugins"></span></label>
+              <input class="fl-input" id="plugins" type="text" spellcheck="false">
+              <button class="fl-browse" id="b-plugins"></button>
+            </div>
+            <div class="fl-row">
+              <label class="fl-check fl-check--fixed"><input type="checkbox" id="cinis" checked><span id="t-inis"></span></label>
+              <input class="fl-input" id="inis" type="text" spellcheck="false">
+              <button class="fl-browse" id="b-inis"></button>
+            </div>
+          </section>
+
+          <div class="fl-actions">
+            <button class="fl-run" id="run"></button>
+            <button class="fl-stop" id="stop" disabled></button>
+          </div>
+          <div class="fl-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div class="fl-progress__chunk" id="chunk"></div></div>
+
+          <section class="fl-card fl-card--log">
+            <h2 class="fl-log-title" id="log-title"></h2>
+            <div class="fl-log" id="log" role="log" tabindex="0"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/flattener.js"></script>
+</body>
+</html>
