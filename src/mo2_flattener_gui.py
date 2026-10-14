@@ -827,8 +827,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.i18n = I18nManager()
-        self.resize(1080, 920)
-        self.setMinimumSize(920, 760)
+        # textes Socle à 110 % : l'en-tête (titre + statut + langue) demande ~1 100 px
+        self.resize(1180, 920)
+        self.setMinimumSize(1100, 760)
 
         self._worker: FastFlattenerWorker | None = None
         self._init_ui()
