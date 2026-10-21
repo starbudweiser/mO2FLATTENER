@@ -53,7 +53,15 @@ pyinstaller \
     "$MAIN_SCRIPT"
 rm -rf "$ROOT/${APP_NAME}.app"
 mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
-"$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh" "$ROOT/${APP_NAME}.app" 1.0.0
+# Signature stable avec _tools/sign_app.sh (certificat local) ; sans lui (compilation depuis
+# le dépôt GitHub seul), signature ad hoc pour que l'appli se lance quand même.
+SIGN_APP="$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh"
+if [ -x "$SIGN_APP" ]; then
+    "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.0.0
+else
+    echo "_tools/sign_app.sh absent : signature ad hoc."
+    codesign --force --deep --sign - "$ROOT/${APP_NAME}.app"
+fi
 
 echo "=================================================="
 echo "✓ Application : $ROOT/${APP_NAME}.app"
