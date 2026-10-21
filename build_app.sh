@@ -53,7 +53,7 @@ pyinstaller \
     "$MAIN_SCRIPT"
 rm -rf "$ROOT/${APP_NAME}.app"
 mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
-"$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh" "$ROOT/${APP_NAME}.app"
+"$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh" "$ROOT/${APP_NAME}.app" 1.0.0
 
 echo "=================================================="
 echo "✓ Application : $ROOT/${APP_NAME}.app"
