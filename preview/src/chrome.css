@@ -75,8 +75,8 @@ body {
   flex: none; width: 40px; height: 40px; border-radius: 50%;
   display: grid; place-items: center; font: 700 20px/1 var(--font-sans);
 }
-.qt-msg__icon--information { background: var(--info-bg); color: var(--info-soft); }
-.qt-msg__icon--question { background: var(--info-bg); color: var(--info-soft); }
+.qt-msg__icon--information { background: var(--surface-raised); color: var(--info-soft); }
+.qt-msg__icon--question { background: var(--surface-raised); color: var(--info-soft); }
 .qt-msg__icon--warning { background: var(--warning-bg); color: var(--warning-soft); }
 .qt-msg__icon--critical { background: var(--danger-bg); color: var(--danger-soft); }
 .qt-msg__text { margin: 0; white-space: pre-wrap; color: var(--text); font-size: 13px; line-height: 1.5; }
