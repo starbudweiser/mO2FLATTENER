@@ -40,36 +40,7 @@ except ImportError as err:
     )
     sys.exit(1)
 
-IGNORED_FILES = {"meta.ini"}
-IGNORED_DIRS = {".git", ".svn", "__pycache__"}
-IGNORED_EXTENSIONS = {".pdb", ".mohidden"}
-
-# Extensions parasites à ignorer directement à la racine de Data
-IGNORED_ROOT_FILE_EXTENSIONS = {".txt", ".md", ".html", ".modgroups", ".ds_store"}
-
-# Dossiers parasites inertes à ignorer dans Data
-IGNORED_DATA_ROOT_DIRS = {
-    "fomod",
-    "docs",
-    "documentation",
-    "readme",
-    "readmes",
-    "hashtags",
-    "3dnpc-amm",
-    "dip",
-    "oathvein racemenu dip",
-    "headpartwhitelist",
-    "optional",
-    "source",
-    "merge",
-    "echizen spear remastered readme",
-    "ax_readmefiles",
-    "amidianborn optional plugins",
-    ".esp",
-    ".esp version",
-    "esl",
-    "esp",
-}
+from mo2_flattener_core import build_tasks, optimized_copy_file
 
 # ==============================================================================
 # INTERNATIONALISATION (i18n) - FR, EN, IT, ES
@@ -99,7 +70,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "lbl_dest": "Racine du jeu cible :",
         "ph_dest": "Ex : /chemin/vers/Skyrim Special Edition",
         "btn_browse": "Parcourir",
-        "chk_hardlinks": "Utiliser des liens physiques (Hardlinks) — Décoché = Copie physique complète",
+        "chk_hardlinks": "Hors APFS, utiliser des liens physiques (Hardlinks) — Décoché = Copie complète. Sur APFS, copie instantanée sans place en plus.",
         "chk_stop_on_error": "Arrêter immédiatement l'assemblage en cas d'erreur de copie",
         "card2_title": "2. DÉPLOIEMENT DES CONFIGURATIONS DU JEU",
         "chk_plugins": "Copier plugins.txt (AppData) :",
@@ -150,7 +121,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "lbl_dest": "Target Game Root:",
         "ph_dest": "e.g. /path/to/Skyrim Special Edition",
         "btn_browse": "Browse",
-        "chk_hardlinks": "Use hardlinks to save disk space — Unchecked = Full standalone copy",
+        "chk_hardlinks": "Outside APFS, use hardlinks — Unchecked = Full copy. On APFS, instant copy that uses no extra space.",
         "chk_stop_on_error": "Stop assembly immediately on copy error",
         "card2_title": "2. GAME CONFIGURATION & PLUGINS DEPLOYMENT",
         "chk_plugins": "Copy plugins.txt (AppData):",
@@ -201,7 +172,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "lbl_dest": "Radice del gioco (Root):",
         "ph_dest": "Es: /percorso/di/Skyrim Special Edition",
         "btn_browse": "Sfoglia",
-        "chk_hardlinks": "Usa collegamenti fisici (Hardlinks) — Deselezionato = Copia reale completa",
+        "chk_hardlinks": "Fuori da APFS, usa collegamenti fisici (Hardlinks) — Deselezionato = Copia completa. Su APFS, copia istantanea senza spazio in più.",
         "chk_stop_on_error": "Interrompi immediatamente l'assemblaggio in caso di errore",
         "card2_title": "2. DISTRIBUZIONE CONFIGURAZIONI DEL GIOCO",
         "chk_plugins": "Copia plugins.txt (AppData):",
@@ -252,7 +223,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "lbl_dest": "Raíz del juego destino:",
         "ph_dest": "Ej: /ruta/hacia/Skyrim Special Edition",
         "btn_browse": "Examinar",
-        "chk_hardlinks": "Usar enlaces físicos (Hardlinks) — Desmarcado = Copia física completa",
+        "chk_hardlinks": "Fuera de APFS, usar enlaces físicos (Hardlinks) — Desmarcado = Copia completa. En APFS, copia instantánea sin espacio adicional.",
         "chk_stop_on_error": "Detener el ensamblaje de inmediato si ocurre un error",
         "card2_title": "2. DESPLIEGUE DE CONFIGURACIONES DEL JUEGO",
         "chk_plugins": "Copiar plugins.txt (AppData):",
@@ -531,57 +502,6 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
 }
 """
 
-# ==============================================================================
-# MOTEUR DE FILTRAGE ET COPIE HAUTE PERFORMANCE
-# ==============================================================================
-
-def is_ignored_file(filename: str, is_data_root: bool = False) -> bool:
-    """Vérifie si un fichier doit être ignoré."""
-    if filename in IGNORED_FILES:
-        return True
-    lower_name = filename.lower()
-    if lower_name.endswith(".mohidden"):
-        return True
-    ext = os.path.splitext(lower_name)[1]
-    if ext in IGNORED_EXTENSIONS:
-        return True
-    if is_data_root and ext in IGNORED_ROOT_FILE_EXTENSIONS:
-        return True
-    return False
-
-
-def is_ignored_dir(dirname: str) -> bool:
-    """Vérifie si un dossier doit être ignoré."""
-    lower = dirname.lower()
-    if lower in IGNORED_DIRS or lower in IGNORED_DATA_ROOT_DIRS:
-        return True
-    return lower.endswith(".mohidden")
-
-
-def filter_dirs_in_place(dirs: List[str]) -> None:
-    dirs[:] = [d for d in dirs if not is_ignored_dir(d)]
-
-
-def optimized_copy_file(src: Path, dst: Path, use_hardlinks: bool) -> None:
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    if dst.exists():
-        try:
-            dst.unlink()
-        except OSError:
-            pass
-
-    if use_hardlinks:
-        try:
-            os.link(src, dst)
-            return
-        except OSError:
-            pass
-
-    with open(src, "rb") as fsrc, open(dst, "wb") as fdst:
-        shutil.copyfileobj(fsrc, fdst, length=1024 * 1024)
-    shutil.copystat(src, dst)
-
-
 class FastFlattenerWorker(QThread):
     progress_val = pyqtSignal(int)
     log_msg = pyqtSignal(str)
@@ -624,118 +544,18 @@ class FastFlattenerWorker(QThread):
         t = self.i18n.t
         try:
             self.log_msg.emit(t("log_analyzing", name=self.modlist_file.name))
-            active_mods = self._parse_modlist(self.modlist_file)
-
-            stock_game_dir = None
-            candidate_stock = self.mo2_dir.parent / "STOCK GAME"
-            if candidate_stock.is_dir():
-                stock_game_dir = candidate_stock
-            elif (self.mo2_dir / "STOCK GAME").is_dir():
-                stock_game_dir = self.mo2_dir / "STOCK GAME"
-
-            mods_dir = self.mo2_dir / "mods"
-            overwrite_dir = self.mo2_dir / "overwrite"
+            self.log_msg.emit(t("log_indexing_ram"))
+            tasks = build_tasks(self.mo2_dir, self.modlist_file, self.dest_game_root, lambda: self._is_stopped)
             profile_dir = self.modlist_file.parent
+            if self._is_stopped:
+                self.stopped_signal.emit()
+                return
 
             self.dest_game_root.mkdir(parents=True, exist_ok=True)
             self.dest_data_dir.mkdir(parents=True, exist_ok=True)
-
             self.log_msg.emit(t("log_root_dir", path=str(self.dest_game_root)))
             self.log_msg.emit(t("log_data_dir", path=str(self.dest_data_dir)))
             self.log_msg.emit(t("log_filters"))
-            self.log_msg.emit(t("log_indexing_ram"))
-
-            data_file_map: Dict[str, Path] = {}
-            root_file_map: Dict[str, Path] = {}
-
-            # 1. Indexation STOCK GAME
-            if stock_game_dir:
-                self.log_msg.emit(t("log_indexing_stock", name=stock_game_dir.name))
-                for root, dirs, files in os.walk(stock_game_dir):
-                    if self._is_stopped:
-                        break
-                    filter_dirs_in_place(dirs)
-                    for f in files:
-                        full_p = Path(root) / f
-                        rel_p = full_p.relative_to(stock_game_dir)
-                        parts = rel_p.parts
-                        is_data = bool(parts and parts[0].lower() == "data")
-                        is_root_data = bool(is_data and len(parts) == 2)
-                        if is_ignored_file(f, is_data_root=is_root_data):
-                            continue
-                        if is_data:
-                            sub_parts = parts[1:]
-                            if sub_parts and sub_parts[0].lower() in IGNORED_DATA_ROOT_DIRS:
-                                continue
-                            sub_rel = Path(*sub_parts)
-                            data_file_map[str(sub_rel).lower()] = full_p
-                        else:
-                            root_file_map[str(rel_p).lower()] = full_p
-
-            if self._is_stopped:
-                self.stopped_signal.emit()
-                return
-
-            # 2. Indexation Mods
-            for idx, mod_name in enumerate(active_mods, start=1):
-                if self._is_stopped:
-                    break
-                mod_path = mods_dir / mod_name
-                if not mod_path.is_dir() or is_ignored_dir(mod_name):
-                    continue
-
-                root_builder_dir = mod_path / "Root"
-                if root_builder_dir.is_dir():
-                    for root, dirs, files in os.walk(root_builder_dir):
-                        filter_dirs_in_place(dirs)
-                        for f in files:
-                            if not is_ignored_file(f):
-                                full_p = Path(root) / f
-                                rel_p = full_p.relative_to(root_builder_dir)
-                                root_file_map[str(rel_p).lower()] = full_p
-
-                effective_data_src = mod_path
-                nested_data = mod_path / "Data"
-                if nested_data.is_dir() and not (mod_path / "textures").is_dir() and not (mod_path / "meshes").is_dir():
-                    effective_data_src = nested_data
-
-                for root, dirs, files in os.walk(effective_data_src):
-                    filter_dirs_in_place(dirs)
-                    if effective_data_src == mod_path:
-                        dirs[:] = [d for d in dirs if d != "Root"]
-                    for f in files:
-                        full_p = Path(root) / f
-                        rel_p = full_p.relative_to(effective_data_src)
-                        is_root_file = bool(len(rel_p.parts) == 1)
-                        if is_ignored_file(f, is_data_root=is_root_file):
-                            continue
-                        if rel_p.parts and rel_p.parts[0].lower() in IGNORED_DATA_ROOT_DIRS:
-                            continue
-                        data_file_map[str(rel_p).lower()] = full_p
-
-            if self._is_stopped:
-                self.stopped_signal.emit()
-                return
-
-            # 3. Indexation Overwrite
-            if overwrite_dir.is_dir():
-                for root, dirs, files in os.walk(overwrite_dir):
-                    filter_dirs_in_place(dirs)
-                    for f in files:
-                        full_p = Path(root) / f
-                        rel_p = full_p.relative_to(overwrite_dir)
-                        is_root_file = bool(len(rel_p.parts) == 1)
-                        if is_ignored_file(f, is_data_root=is_root_file):
-                            continue
-                        if rel_p.parts and rel_p.parts[0].lower() in IGNORED_DATA_ROOT_DIRS:
-                            continue
-                        data_file_map[str(rel_p).lower()] = full_p
-
-            tasks: List[Tuple[Path, Path]] = []
-            for rel_str, src_p in root_file_map.items():
-                tasks.append((src_p, self.dest_game_root / rel_str))
-            for rel_str, src_p in data_file_map.items():
-                tasks.append((src_p, self.dest_data_dir / rel_str))
 
             total_files = len(tasks)
             self.log_msg.emit(t("log_index_complete", total=total_files))
@@ -806,18 +626,6 @@ class FastFlattenerWorker(QThread):
 
         except Exception as e:
             self.error_raised.emit(str(e))
-
-    @staticmethod
-    def _parse_modlist(modlist_path: Path) -> List[str]:
-        with open(modlist_path, "r", encoding="utf-8-sig") as f:
-            lines = [line.strip() for line in f if line.strip()]
-        active_mods = []
-        for line in reversed(lines):
-            if line.startswith("+"):
-                m = line[1:].strip()
-                if m:
-                    active_mods.append(m)
-        return active_mods
 
 # ==============================================================================
 # FENÊTRE PRINCIPALE
