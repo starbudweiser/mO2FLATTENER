@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple
 
 import socle_qt
+import update_check
 
 try:
     from PyQt6.QtWidgets import (
@@ -1122,6 +1123,7 @@ def main():
 
     window = MainWindow()
     window.show()
+    update_check.start_qt(window, "mO2FLATTENER", lang=lambda: window.i18n.current_language)  # nouvelle version ? (au plus une fois par jour)
     sys.exit(app.exec())
 
 
