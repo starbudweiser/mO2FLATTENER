@@ -47,8 +47,6 @@ A Mac with **Apple Silicon** (M1 or later), **macOS 13 Ventura** or later. No Py
 
 1. Download the zip from Nexus Mods (or from the GitHub releases) and unzip it.
 2. Move **mO2FLATTENER.app** to your **Applications** folder.
-3. First launch: the app is signed with a personal certificate but **not notarized by Apple**, so macOS blocks it. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to mO2FLATTENER, then confirm. On macOS 14 or earlier you can also right-click the app → **Open** → **Open**.
-4. Still blocked? In Terminal: `xattr -dr com.apple.quarantine /Applications/mO2FLATTENER.app`
 
 ### How to use
 
@@ -115,8 +113,6 @@ Un Mac **Apple Silicon** (M1 ou plus récent), **macOS 13 Ventura** ou plus réc
 
 1. Téléchargez le zip sur Nexus Mods (ou dans les releases GitHub) et décompressez-le.
 2. Placez **mO2FLATTENER.app** dans votre dossier **Applications**.
-3. Premier lancement : l'appli est signée avec un certificat personnel mais **pas notarisée par Apple**, macOS la bloque donc. Ouvrez **Réglages Système → Confidentialité et sécurité**, descendez et cliquez sur **Ouvrir quand même** à côté de mO2FLATTENER, puis confirmez. Sous macOS 14 ou antérieur, vous pouvez aussi faire clic droit sur l'appli → **Ouvrir** → **Ouvrir**.
-4. Toujours bloquée ? Dans le Terminal : `xattr -dr com.apple.quarantine /Applications/mO2FLATTENER.app`
 
 ### Utilisation
 
