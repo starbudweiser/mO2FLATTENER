@@ -1113,6 +1113,7 @@ class MainWindow(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     socle_qt.apply(app, full=False)  # design system Socle
+    socle_qt.brand(app, "mO2FLATTENER", "#e5483a")  # « m » dans le rouge du logo
     if sys.platform == "darwin":
         app.setFont(QFont(".AppleSystemUIFont", 14))
     else:
