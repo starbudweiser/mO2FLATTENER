@@ -43,6 +43,9 @@ fi
 
 # 3. Compilation (sorties temporaires hors du projet), livraison à la racine et signature stable (_tools)
 echo "📦 Compilation de ${APP_NAME}..."
+# Lanceur PyInstaller compilé depuis les sources, contre les faux positifs antivirus (absent hors de ce dossier d'outils : lanceur standard).
+PYI_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/_tools/pyinstaller_source.sh"
+if [ -x "$PYI_SRC" ]; then "$PYI_SRC" python3; fi
 pyinstaller \
     --noconfirm --clean --onedir --windowed \
     --name "$APP_NAME" \
@@ -57,7 +60,7 @@ mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
 # le dépôt GitHub seul), signature ad hoc pour que l'appli se lance quand même.
 SIGN_APP="$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh"
 if [ -x "$SIGN_APP" ]; then
-    "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.1.0
+    "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.3.0
 else
     echo "_tools/sign_app.sh absent : signature ad hoc."
     codesign --force --deep --sign - "$ROOT/${APP_NAME}.app"
