@@ -32,7 +32,7 @@ try:
         QLabel, QPushButton, QFrame, QFileDialog, QMessageBox, QComboBox,
         QTextEdit, QLineEdit, QCheckBox, QProgressBar
     )
-    from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSettings
+    from PyQt6.QtCore import QLocale, Qt, QThread, pyqtSignal, QSettings
     from PyQt6.QtGui import QFont
 except ImportError as err:
     sys.stderr.write(
@@ -273,11 +273,19 @@ class I18nManager:
     def _init_settings(self):
         try:
             self.settings = QSettings("SkyrimTools", "MO2Flattener")
-            saved_lang = self.settings.value("language", "fr")
+            saved_lang = self.settings.value("language", self._system_lang())
         except Exception:
             self.settings = None
-            saved_lang = "fr"
-        self._current_lang = saved_lang if saved_lang in TRANSLATIONS else "fr"
+            saved_lang = self._system_lang()
+        self._current_lang = saved_lang if saved_lang in TRANSLATIONS else self._system_lang()
+
+    @staticmethod
+    def _system_lang() -> str:
+        """Première langue préférée du système parmi celles de l'appli, sinon l'anglais."""
+        for code in QLocale.system().uiLanguages():
+            if code[:2].lower() in TRANSLATIONS:
+                return code[:2].lower()
+        return "en"
 
     @property
     def current_language(self) -> str:
@@ -785,7 +793,7 @@ class MainWindow(QMainWindow):
         c1_layout.addLayout(r4)
 
         # Options de contrôle
-        chk_row = QHBoxLayout()
+        chk_row = QVBoxLayout()
         self.chk_hardlinks = QCheckBox(self.i18n.t("chk_hardlinks"))
         self.chk_hardlinks.setChecked(False)
         chk_row.addWidget(self.chk_hardlinks)
