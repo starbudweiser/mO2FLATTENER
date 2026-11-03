@@ -43,6 +43,7 @@ except ImportError as err:
     sys.exit(1)
 
 from mo2_flattener_core import build_tasks, optimized_copy_file
+from dock_progress import DockProgress
 
 # ==============================================================================
 # INTERNATIONALISATION (i18n) - FR, EN, IT, ES
@@ -643,6 +644,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(1100, 760)
 
         self._worker: FastFlattenerWorker | None = None
+        self._dock = DockProgress(QApplication.instance())  # jauge dans l'icône du Dock
         self._init_ui()
         self._center_window()
         self.retranslate_ui()
@@ -1056,6 +1058,7 @@ class MainWindow(QMainWindow):
             i18n=self.i18n,
         )
         self._worker.progress_val.connect(self.progress_bar.setValue)
+        self._worker.progress_val.connect(self._dock.set)
         self._worker.log_msg.connect(self._log)
         self._worker.finished_ok.connect(self._on_finished)
         self._worker.stopped_signal.connect(self._on_stopped)
@@ -1070,18 +1073,21 @@ class MainWindow(QMainWindow):
             self._worker.request_stop()
 
     def _on_finished(self):
+        self._dock.clear()
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_done"))
         QMessageBox.information(self, self.i18n.t("success_title"), self.i18n.t("success_msg"))
 
     def _on_stopped(self):
+        self._dock.clear()
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_stopped"))
         QMessageBox.warning(self, self.i18n.t("err_title"), self.i18n.t("stop_msg"))
 
     def _on_error(self, err_msg: str):
+        self._dock.clear()
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_error"))
