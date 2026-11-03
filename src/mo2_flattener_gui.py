@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple
 
 import socle_qt
+import lang_menu
 import updater
 
 try:
@@ -32,7 +33,7 @@ try:
         QLabel, QPushButton, QFrame, QFileDialog, QMessageBox, QComboBox,
         QTextEdit, QLineEdit, QCheckBox, QProgressBar
     )
-    from PyQt6.QtCore import QLocale, Qt, QThread, pyqtSignal, QSettings
+    from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSettings
     from PyQt6.QtGui import QFont
 except ImportError as err:
     sys.stderr.write(
@@ -46,13 +47,6 @@ from mo2_flattener_core import build_tasks, optimized_copy_file
 # ==============================================================================
 # INTERNATIONALISATION (i18n) - FR, EN, IT, ES
 # ==============================================================================
-
-AVAILABLE_LANGUAGES = [
-    ("fr", "Français", "🇫🇷"),
-    ("en", "English", "🇬🇧"),
-    ("it", "Italiano", "🇮🇹"),
-    ("es", "Español", "🇪🇸"),
-]
 
 TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
@@ -273,32 +267,32 @@ class I18nManager:
     def _init_settings(self):
         try:
             self.settings = QSettings("SkyrimTools", "MO2Flattener")
-            saved_lang = self.settings.value("language", self._system_lang())
+            self._choice = lang_menu.normalize_choice(self.settings.value("language", lang_menu.AUTO))
         except Exception:
             self.settings = None
-            saved_lang = self._system_lang()
-        self._current_lang = saved_lang if saved_lang in TRANSLATIONS else self._system_lang()
+            self._choice = lang_menu.AUTO
+        self._current_lang = lang_menu.resolve(self._choice)
 
-    @staticmethod
-    def _system_lang() -> str:
-        """Première langue préférée du système parmi celles de l'appli, sinon l'anglais."""
-        for code in QLocale.system().uiLanguages():
-            if code[:2].lower() in TRANSLATIONS:
-                return code[:2].lower()
-        return "en"
+    @property
+    def choice(self) -> str:
+        """« auto » (langue du Mac) ou code de langue choisi dans le menu « Langue »."""
+        return self._choice
 
     @property
     def current_language(self) -> str:
         return self._current_lang
 
-    def set_language(self, lang_code: str) -> bool:
-        if lang_code in TRANSLATIONS and lang_code != self._current_lang:
+    def set_language(self, choice: str) -> bool:
+        """Mémorise le choix (« auto » ou code) ; vrai si la langue affichée change."""
+        self._choice = lang_menu.normalize_choice(choice)
+        if self.settings:
+            try:
+                self.settings.setValue("language", self._choice)
+            except Exception:
+                pass
+        lang_code = lang_menu.resolve(self._choice)
+        if lang_code != self._current_lang:
             self._current_lang = lang_code
-            if self.settings:
-                try:
-                    self.settings.setValue("language", lang_code)
-                except Exception:
-                    pass
             return True
         return False
 
@@ -644,7 +638,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.i18n = I18nManager()
-        # textes Socle à 110 % : l'en-tête (titre + statut + langue) demande ~1 100 px
+        # textes Socle à 110 % : l'en-tête (titre + statut) demande ~1 100 px
         self.resize(1180, 920)
         self.setMinimumSize(1100, 760)
 
@@ -699,24 +693,6 @@ class MainWindow(QMainWindow):
         self.status_lbl = QLabel(self.i18n.t("header_status_idle"))
         self.status_lbl.setStyleSheet("color: #aaaaaa; font-size: 13px; font-weight: 500;")
         right_box.addWidget(self.status_lbl)
-
-        pipe = QLabel("|")
-        pipe.setStyleSheet("color: #444444;")
-        right_box.addWidget(pipe)
-
-        self.combo_lang = QComboBox()
-        self.combo_lang.setFixedHeight(30)
-        self.combo_lang.setCursor(Qt.CursorShape.PointingHandCursor)
-        for code, label, flag in AVAILABLE_LANGUAGES:
-            self.combo_lang.addItem(f"{flag} {label}", code)
-
-        for i, (code, _, _) in enumerate(AVAILABLE_LANGUAGES):
-            if code == self.i18n.current_language:
-                self.combo_lang.setCurrentIndex(i)
-                break
-
-        self.combo_lang.currentIndexChanged.connect(self._on_lang_changed)
-        right_box.addWidget(self.combo_lang)
 
         header_layout.addLayout(right_box)
         root_layout.addWidget(header)
@@ -917,11 +893,10 @@ class MainWindow(QMainWindow):
     # -----------------------------------------------------------------
     # INTERNATIONALISATION
     # -----------------------------------------------------------------
-    def _on_lang_changed(self, idx: int):
-        if 0 <= idx < len(AVAILABLE_LANGUAGES):
-            lang_code = AVAILABLE_LANGUAGES[idx][0]
-            if self.i18n.set_language(lang_code):
-                self.retranslate_ui()
+    def _on_lang_changed(self, choice: str):
+        """Choix du menu « Langue » de la barre de menus."""
+        if self.i18n.set_language(choice):
+            self.retranslate_ui()
 
     def retranslate_ui(self):
         t = self.i18n.t
@@ -1131,6 +1106,7 @@ def main():
     app.setStyleSheet(socle_qt.qss(full=False) + DARK_THEME_QSS)  # règles Socle de base conservées
 
     window = MainWindow()
+    lang_menu.install_qt(window, lambda: window.i18n.choice, window._on_lang_changed, lambda code: None)
     window.show()
     updater.start_qt(window, "mO2FLATTENER", lang=lambda: window.i18n.current_language)  # nouvelle version ? (au plus une fois par jour)
     sys.exit(app.exec())
