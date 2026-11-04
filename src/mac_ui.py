@@ -422,6 +422,11 @@ class MacAnnounceCard(QFrame):
         fl.addWidget(_rich_label("<br>".join(parts)))
         _put(self.list_lay, frame)
 
+    def _add_ok(self, fix_id: str) -> None:
+        title = self._tr(f"mac_ok_{fix_id}")
+        _put(self.list_lay, _rich_label(
+            f'<span style="color:{socle_qt.c("success-soft")}">✓</span>&nbsp; <span style="color:{socle_qt.c("text-muted")}">{esc(title)}</span>'))
+
     def _add_skipped(self, skip: Json) -> None:
         tr = self._tr
         title = mackit_text(tr, {"key": f"mackit.fix.{skip['id']}.title"})
@@ -467,7 +472,7 @@ class MacAnnounceCard(QFrame):
                 self._add_note(tr("mac_previous", n=self._state["previous"]))
             if self._state.get("future"):
                 self._add_note(tr("mac_future"))
-            elif not fixes and not skipped and not discarded:
+            elif not fixes and not skipped and not discarded and not self._state.get("previous"):
                 self._add_note(tr("mac_nothing"))
             if fixes:
                 self._add_header(tr("mac_will_do"))
@@ -481,6 +486,10 @@ class MacAnnounceCard(QFrame):
                 self._add_header(tr("mac_skipped_title"))
                 for skip in skipped:
                     self._add_skipped(skip)
+            if plan.get("ok"):
+                self._add_header(tr("mac_ok_title"))
+                for fix_id in plan["ok"]:
+                    self._add_ok(fix_id)
             show_bottled = True
         self.scroll.setVisible(self.list_lay.count() > 0)
         self.bottled.set_info(self._state.get("bottled") if show_bottled else None)

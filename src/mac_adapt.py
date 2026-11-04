@@ -28,6 +28,10 @@ BOTTLED_MINIMUM = "1.0.26"
 BACKUP_DIR = "_MAC_BACKUP"
 MANIFEST = "manifest.json"
 FIX_IDS = ("engine", "bridge", "displayTweaks", "duplicates", "compiler", "overrides")
+# correctif -> contrôle du moteur qui dit s'il est déjà en ordre
+OK_CHECKS = {"engine": "engine", "bridge": "bridge", "displayTweaks": "displayTweaks", "duplicates": "bottledDuplicates"}
+# correctifs qui ne touchent que la bouteille (les autres lisent les fichiers du jeu)
+BOTTLE_FIXES = ("engine",)
 ARCHIVE_EXTENSIONS = (".7z", ".zip", ".rar")
 
 Json = Dict[str, Any]
@@ -329,7 +333,16 @@ def summarize_plan(plan_obj: Json) -> Json:
         "skipped": plan_obj.get("skipped", []),
         "discarded": plan_obj.get("discarded", []),
         "bottled": plan_obj.get("bottled"),
+        "ok": already_ok(plan_obj),
     }
+
+
+def already_ok(plan_obj: Json) -> List[str]:
+    """Les points que le moteur a contrôlés et trouvés « ok » (ni à faire ni écartés) : seuls ceux-là sont annoncés « déjà en
+    ordre ». Un contrôle « na » (pas de Bottled Shaders, pas de SSE Display Tweaks…) ne dit rien : on ne l'annonce pas."""
+    statuses = {c.get("id"): c.get("status") for c in plan_obj.get("checks", [])}
+    decided = {f["id"] for f in plan_obj.get("fixes", [])} | {s["id"] for s in plan_obj.get("skipped", [])}
+    return [fix for fix, check in OK_CHECKS.items() if fix not in decided and statuses.get(check) == "ok"]
 
 
 def preview(game: Path, bottle: Optional[str], mo2_dir: Optional[Path] = None, mods: Optional[List[str]] = None) -> Json:
@@ -348,7 +361,12 @@ def preview(game: Path, bottle: Optional[str], mo2_dir: Optional[Path] = None, m
         return {"kind": "error", "error": error_text(result)}
     plan_obj = result["plan"]
     previous = applied(game) if has_manifest(game) else []
-    return {"kind": "plan", "future": future, "plan": summarize_plan(plan_obj),
+    summary = summarize_plan(plan_obj)
+    if previous:
+        summary["ok"] = []  # l'adaptation précédente sera annulée puis refaite : rien n'est « déjà en ordre »
+    elif future:
+        summary["ok"] = [i for i in summary["ok"] if i in BOTTLE_FIXES]  # le reste dépend de fichiers du jeu, pas encore là
+    return {"kind": "plan", "future": future, "plan": summary,
             "bottled": bottled_info(plan_obj.get("bottled"), mo2_dir), "previous": len(previous)}
 
 

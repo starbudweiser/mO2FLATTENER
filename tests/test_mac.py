@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import sys
 import tempfile
 import unittest
@@ -259,6 +260,7 @@ class TestMackit(unittest.TestCase):
         out = mac_adapt.preview(self.game, str(self.bottle))
         self.assertEqual(out["kind"], "plan")
         self.assertEqual({f["id"] for f in out["plan"]["fixes"]}, {"engine", "displayTweaks", "duplicates"})
+        self.assertEqual(out["plan"]["ok"], [])  # seul un contrôle « ok » du moteur compte (ici : bridge et doublons en « na »)
         self.assertEqual(tree(self.base), self.original)
         self.assertFalse((self.game / "_MAC_BACKUP").exists())
 
@@ -266,6 +268,7 @@ class TestMackit(unittest.TestCase):
         out = mac_adapt.preview(self.base / "Later", str(self.bottle))
         self.assertTrue(out["future"])
         self.assertEqual([f["id"] for f in out["plan"]["fixes"]], ["engine"])  # seulement ce qui tient à la bouteille
+        self.assertEqual(out["plan"]["ok"], [])  # jamais un point qui lit les fichiers du jeu
         self.assertFalse((self.base / "Later").exists())
 
     def test_finish_then_undo_all_gives_back_the_original(self):
@@ -293,6 +296,20 @@ class TestMackit(unittest.TestCase):
         self.assertNotIn("duplicates", [i["id"] for i in out["items"]])
         self.assertTrue((self.game / "Data" / "SKSE" / "Plugins" / "EVLaS.dll").exists())
         self.assertEqual({a["id"] for a in mac_adapt.applied(self.game)}, {"engine", "displayTweaks"})
+
+    def test_a_game_adapted_by_another_tool_lists_what_is_already_in_order(self):
+        mac_adapt.finish(self.game, str(self.bottle))
+        shutil.rmtree(self.game / "_MAC_BACKUP")  # plus de manifeste : l'état du jeu est ce qu'il est
+        out = mac_adapt.preview(self.game, str(self.bottle))
+        self.assertEqual(out["previous"], 0)
+        self.assertEqual(out["plan"]["fixes"], [])
+        self.assertEqual(out["plan"]["ok"], ["engine", "displayTweaks", "duplicates"])
+
+    def test_an_adapted_game_is_announced_as_redone_not_as_already_in_order(self):
+        mac_adapt.finish(self.game, str(self.bottle))
+        out = mac_adapt.preview(self.game, str(self.bottle))
+        self.assertEqual(out["previous"], 3)
+        self.assertEqual(out["plan"]["ok"], [])  # l'adaptation précédente sera annulée puis refaite
 
     def test_previous_adaptation_is_undone_before_a_new_assembly(self):
         mac_adapt.finish(self.game, str(self.bottle))
