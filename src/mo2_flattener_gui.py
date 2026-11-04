@@ -31,9 +31,9 @@ try:
     from PyQt6.QtWidgets import (
         QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
         QLabel, QPushButton, QFrame, QFileDialog, QMessageBox, QComboBox,
-        QTextEdit, QLineEdit, QCheckBox, QProgressBar
+        QTextEdit, QLineEdit, QCheckBox, QProgressBar, QScrollArea
     )
-    from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSettings
+    from PyQt6.QtCore import Qt, QThread, QTimer, pyqtSignal, QSettings
     from PyQt6.QtGui import QFont
 except ImportError as err:
     sys.stderr.write(
@@ -42,7 +42,10 @@ except ImportError as err:
     )
     sys.exit(1)
 
-from mo2_flattener_core import build_tasks, optimized_copy_file
+import mac_adapt
+from mac_texts import MAC_TEXTS, MAC_UI
+from mac_ui import MacAnnounceCard, MacPlanWorker, MacReportCard, MacUndoWorker, mackit_text
+from mo2_flattener_core import build_tasks, optimized_copy_file, parse_modlist
 from dock_progress import DockProgress
 
 # ==============================================================================
@@ -255,6 +258,12 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "log_interrupt_requested": "\n[INTERRUPCIÓN] Señal de parada enviada al motor...",
     },
 }
+
+# Adaptation au Mac : textes de l'interface et traductions des clés « mackit.* » (mac_texts.py), mêmes langues
+for _lang, _table in TRANSLATIONS.items():
+    _table.update(MAC_UI[_lang])
+    _table.update(MAC_TEXTS[_lang])
+
 
 class I18nManager:
     _instance = None
@@ -512,6 +521,8 @@ class FastFlattenerWorker(QThread):
     finished_ok = pyqtSignal()
     stopped_signal = pyqtSignal()
     error_raised = pyqtSignal(str)
+    mac_stage = pyqtSignal()          # l'adaptation au Mac commence (plus d'interruption possible)
+    mac_report = pyqtSignal(object)   # bilan de l'adaptation (dict de mac_adapt.finish)
 
     def __init__(
         self,
@@ -526,8 +537,12 @@ class FastFlattenerWorker(QThread):
         inis_dest: Path | None,
         i18n: I18nManager,
         parent=None,
+        mac_enabled: bool = False,
+        mac_bottle: str | None = None,  # None : la bouteille qui contient le jeu, sinon la première CrossOver ; "" : aucune
     ):
         super().__init__(parent)
+        self.mac_enabled = mac_enabled
+        self.mac_bottle = mac_bottle
         self.mo2_dir = mo2_dir
         self.modlist_file = modlist_file
         self.dest_game_root = dest_game_root
@@ -544,6 +559,47 @@ class FastFlattenerWorker(QThread):
     def request_stop(self):
         self._is_stopped = True
 
+    def _mac_notify(self, event: str, payload: dict):
+        """Journal de l'adaptation au Mac : chaque correctif est annoncé avant d'être appliqué."""
+        t = self.i18n.t
+        if event == "start":
+            self.log_msg.emit(t("log_mac_start"))
+        elif event == "fix":
+            self.log_msg.emit(t("log_mac_fix", title=mackit_text(t, payload["title"])))
+        elif event == "skip":
+            self.log_msg.emit(t("log_mac_skip", title=mackit_text(t, payload["title"])))
+        elif event == "applied":
+            self.log_msg.emit(t("log_mac_ok", title=mackit_text(t, payload["title"])))
+        elif event == "failed":
+            self.log_msg.emit(t("log_mac_failed", title=mackit_text(t, payload["title"])))
+        elif event == "none":
+            self.log_msg.emit(t("log_mac_none"))
+        elif event == "done":
+            self.log_msg.emit(t("log_mac_done", **payload))
+        elif event == "error":
+            self.log_msg.emit(t("log_mac_error", reason=mackit_text(t, payload.get("text"))))
+        elif event == "previous_undone":
+            self.log_msg.emit(t("log_mac_prev_undone", **payload))
+        elif event == "previous_refused":
+            self.log_msg.emit(t("log_mac_prev_refused"))
+
+    def _run_mac_stage(self):
+        """Adaptation au Mac sur le jeu assemblé. Une erreur de l'outil ne fait jamais échouer l'assemblage."""
+        try:
+            self.mac_stage.emit()
+            self.progress_val.emit(97)
+            mods = parse_modlist(self.modlist_file) if self.modlist_file.is_file() else []
+            bottle = self.mac_bottle or None
+            if self.mac_bottle is None:  # automatique : même choix que la carte (le jeu vient d'être créé : on le refait ici)
+                found, _how = mac_adapt.detect_bottle(mac_adapt.list_bottles(), str(self.dest_game_root))
+                bottle = found["path"] if found else None
+            report = mac_adapt.finish(self.dest_game_root, bottle, self.mo2_dir, mods, self._mac_notify)
+        except Exception as err:
+            report = {"game": str(self.dest_game_root), "items": [], "discarded": [], "bottled": None, "applied": [],
+                      "error": {"key": "mackit.cli.error"}, "unavailable": False, "undone": 0}
+            self._mac_notify("error", {"text": report["error"], "detail": str(err)})
+        self.mac_report.emit(report)
+
     def run(self):
         t = self.i18n.t
         try:
@@ -557,6 +613,8 @@ class FastFlattenerWorker(QThread):
 
             self.dest_game_root.mkdir(parents=True, exist_ok=True)
             self.dest_data_dir.mkdir(parents=True, exist_ok=True)
+            # un nouvel assemblage écrase les fichiers que l'adaptation précédente avait changés : on l'annule d'abord
+            mac_adapt.undo_previous(self.dest_game_root, self._mac_notify)
             self.log_msg.emit(t("log_root_dir", path=str(self.dest_game_root)))
             self.log_msg.emit(t("log_data_dir", path=str(self.dest_data_dir)))
             self.log_msg.emit(t("log_filters"))
@@ -624,6 +682,9 @@ class FastFlattenerWorker(QThread):
                         shutil.copy2(src_ini, self.inis_dest / src_ini.name)
                         self.log_msg.emit(t("log_ini_deployed", name=src_ini.name))
 
+            if self.mac_enabled and not self._is_stopped:
+                self._run_mac_stage()
+
             self.progress_val.emit(100)
             self.log_msg.emit(t("log_success", count=copied_count))
             self.finished_ok.emit()
@@ -640,14 +701,26 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.i18n = I18nManager()
         # textes Socle à 110 % : l'en-tête (titre + statut) demande ~1 100 px
-        self.resize(1180, 920)
-        self.setMinimumSize(1100, 760)
+        screen = QApplication.primaryScreen()
+        avail = screen.availableGeometry().height() if screen else 1080
+        self.resize(1180, min(1100, max(760, avail - 60)))
+        self.setMinimumSize(1100, 640)
 
         self._worker: FastFlattenerWorker | None = None
         self._dock = DockProgress(QApplication.instance())  # jauge dans l'icône du Dock
+        self._mac_seq = 0
+        self._stick_bottom = False
+        self._mac_threads: set = set()
+        self._mac_timer = QTimer(self)
+        self._mac_timer.setSingleShot(True)
+        self._mac_timer.setInterval(500)
+        self._mac_timer.timeout.connect(self._refresh_mac)
         self._init_ui()
         self._center_window()
         self.retranslate_ui()
+        for field in (self.txt_dest, self.txt_mo2, self.txt_modlist):
+            field.textChanged.connect(self._schedule_mac)  # l'annonce suit le jeu cible et l'instance
+        self._schedule_mac()
 
     def _center_window(self):
         screen = QApplication.primaryScreen()
@@ -699,13 +772,29 @@ class MainWindow(QMainWindow):
         header_layout.addLayout(right_box)
         root_layout.addWidget(header)
 
+        # Le reste de la page défile s'il dépasse la fenêtre (Socle : « c'est la page qui défile »)
+        body = QWidget()
+        body.setObjectName("RootWidget")
+        body_layout = QVBoxLayout(body)
+        body_layout.setContentsMargins(0, 0, 0, 0)
+        body_layout.setSpacing(14)
+        page = QScrollArea()
+        page.setWidgetResizable(True)
+        page.setFrameShape(QFrame.Shape.NoFrame)
+        page.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        page.setStyleSheet("QScrollArea { background: transparent; border: none; }")
+        page.viewport().setAutoFillBackground(False)
+        page.setWidget(body)
+        root_layout.addWidget(page, 1)
+        self.page = page
+
         # -------------------------------------------------------------
         # 2. CONTENU PRINCIPAL
         # -------------------------------------------------------------
         card1 = QFrame()
         card1.setObjectName("CardFrame")
         c1_layout = QVBoxLayout(card1)
-        c1_layout.setContentsMargins(18, 16, 18, 16)
+        c1_layout.setContentsMargins(24, 20, 24, 20)
         c1_layout.setSpacing(12)
 
         self.lbl_c1_title = QLabel(self.i18n.t("card1_title"))
@@ -781,13 +870,13 @@ class MainWindow(QMainWindow):
         chk_row.addWidget(self.chk_stop_on_error)
         c1_layout.addLayout(chk_row)
 
-        root_layout.addWidget(card1)
+        body_layout.addWidget(card1)
 
         # Carte 2 : Fichiers Système
         card2 = QFrame()
         card2.setObjectName("CardFrame")
         c2_layout = QVBoxLayout(card2)
-        c2_layout.setContentsMargins(18, 16, 18, 16)
+        c2_layout.setContentsMargins(24, 20, 24, 20)
         c2_layout.setSpacing(12)
 
         self.lbl_c2_title = QLabel(self.i18n.t("card2_title"))
@@ -826,7 +915,12 @@ class MainWindow(QMainWindow):
         r_i.addWidget(self.btn_inis)
         c2_layout.addLayout(r_i)
 
-        root_layout.addWidget(card2)
+        body_layout.addWidget(card2)
+
+        # Carte 3 : adaptation au Mac (DXMT, ENB, DLSS), annoncée avant l'assemblage
+        self.card_mac = MacAnnounceCard(self.i18n.t)
+        self.card_mac.changed.connect(self._refresh_mac)
+        body_layout.addWidget(self.card_mac)
 
         # -------------------------------------------------------------
         # 3. ACTIONS PRINCIPALES (CENTRÉES)
@@ -862,13 +956,13 @@ class MainWindow(QMainWindow):
         action_layout.addWidget(self.btn_stop)
 
         action_layout.addStretch()
-        root_layout.addLayout(action_layout)
+        body_layout.addLayout(action_layout)
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setFixedHeight(8)
         self.progress_bar.setTextVisible(False)
         self.progress_bar.setValue(0)
-        root_layout.addWidget(self.progress_bar)
+        body_layout.addWidget(self.progress_bar)
 
         # -------------------------------------------------------------
         # 4. JOURNAL D'EXÉCUTION
@@ -889,8 +983,14 @@ class MainWindow(QMainWindow):
             "background-color: #181818; color: #dddddd; font-family: 'Menlo', monospace; "
             "font-size: 12px; border: none; border-radius: 5px; padding: 10px;"
         )
+        self.log_text.setMinimumHeight(170)
         cl_layout.addWidget(self.log_text)
-        root_layout.addWidget(card_log, 1)
+        body_layout.addWidget(card_log, 1)
+
+        # Bilan Mac : sous le journal, visible une fois l'adaptation faite
+        self.card_bilan = MacReportCard(self.i18n.t)
+        self.card_bilan.undo_requested.connect(self._undo_mac)
+        body_layout.addWidget(self.card_bilan)
 
     # -----------------------------------------------------------------
     # INTERNATIONALISATION
@@ -926,6 +1026,8 @@ class MainWindow(QMainWindow):
         self.btn_run.setText(t("btn_run"))
         self.btn_stop.setText(t("btn_stop"))
         self.lbl_log_title.setText(t("log_title"))
+        self.card_mac.retranslate()
+        self.card_bilan.retranslate()
 
         if not (self._worker and self._worker.isRunning()):
             prof = self.combo_profile.currentText().strip()
@@ -1007,6 +1109,92 @@ class MainWindow(QMainWindow):
     def _log(self, message: str):
         self.log_text.append(message)
 
+    # -----------------------------------------------------------------
+    # ADAPTATION AU MAC (mackit)
+    # -----------------------------------------------------------------
+    def _schedule_mac(self, *_):
+        self._mac_timer.start()
+
+    def _track(self, worker: QThread) -> QThread:
+        """Garde une référence au thread jusqu'à sa fin (un QThread détruit en cours de route plante)."""
+        self._mac_threads.add(worker)
+        worker.finished.connect(lambda w=worker: self._mac_threads.discard(w))
+        return worker
+
+    def _refresh_mac(self):
+        """Annonce de ce que l'adaptation ferait (mackit plan) sur le jeu cible, sans rien écrire."""
+        if self._worker and self._worker.isRunning():
+            return
+        self._mac_seq += 1
+        if not self.card_mac.enabled():
+            self.card_mac.show_state({"kind": "off"})
+            return
+        if self.card_mac._state.get("kind") != "plan":  # une annonce déjà affichée reste jusqu'à la suivante (pas de saut)
+            self.card_mac.show_state({"kind": "loading"})
+        worker = self._track(MacPlanWorker(self._mac_seq, self.txt_dest.text(), self.txt_mo2.text(),
+                                           self.txt_modlist.text(), self.card_mac.manual_choice, self))
+        worker.done.connect(self._on_mac_plan)
+        worker.start()
+
+    def _on_mac_plan(self, out: dict):
+        if out["seq"] != self._mac_seq:
+            return  # une analyse plus récente est en route
+        self.card_mac.set_bottles(out["bottles"], out["bottle"], out["how"])
+        self.card_mac.show_state(out["state"])
+
+    def _on_mac_stage(self):
+        self.btn_stop.setEnabled(False)  # les correctifs sont tout ou rien : on ne les interrompt pas
+        self.status_lbl.setText(self.i18n.t("header_status_mac"))
+
+    def _on_mac_report(self, report: dict):
+        self.card_bilan.show_report(report)
+        # le bilan est la dernière carte : page défilée en bas pour qu'il se lise en entier. Ses lignes prennent leur
+        # hauteur après coup, donc on suit la hauteur de la page pendant un instant.
+        bar = self.page.verticalScrollBar()
+        self._stick_bottom = True
+        bar.rangeChanged.connect(self._to_page_end)
+        QTimer.singleShot(1200, self._release_page_end)
+
+    def _to_page_end(self, _low: int = 0, high: int = 0):
+        if self._stick_bottom:
+            bar = self.page.verticalScrollBar()
+            bar.setValue(bar.maximum())
+
+    def _release_page_end(self):
+        self._stick_bottom = False
+        try:
+            self.page.verticalScrollBar().rangeChanged.disconnect(self._to_page_end)
+        except TypeError:
+            pass
+
+    def _undo_mac(self, target: str):
+        report = self.card_bilan.report()
+        if not report or (self._worker and self._worker.isRunning()):
+            return
+        self.card_bilan.set_busy(True)
+        worker = self._track(MacUndoWorker(report["game"], target, self))
+        worker.done.connect(lambda result, rep=report: self._on_undo_done(rep, result))
+        worker.start()
+
+    def _on_undo_done(self, report: dict, result: dict):
+        t = self.i18n.t
+        fixes = result.get("fixes") or []
+        for fix in fixes:
+            title = mackit_text(t, {"key": f"mackit.fix.{fix['id']}.title"})
+            if fix.get("status") == "restored":
+                self._log(t("log_mac_undone", title=title))
+            else:
+                self._log(t("log_mac_refused", title=title))
+        if not fixes:
+            self._log(t("log_mac_error", reason=mackit_text(t, (result.get("error") or {}).get("text"))))
+        self.card_bilan.show_report(mac_adapt.report_after_undo(report, result))
+        self._schedule_mac()  # l'annonce redit vrai : ce qui vient d'être annulé redevient à faire
+
+    def closeEvent(self, event):  # noqa: N802 (Qt)
+        for worker in list(self._mac_threads):
+            worker.wait(5000)
+        super().closeEvent(event)
+
     def _start_process(self):
         if self._worker and self._worker.isRunning():
             return
@@ -1044,6 +1232,7 @@ class MainWindow(QMainWindow):
         self.btn_stop.setEnabled(True)
         self.progress_bar.setValue(0)
         self.status_lbl.setText(t("header_status_running"))
+        self.card_bilan.hide()  # le bilan d'un précédent assemblage ne dit plus vrai
 
         self._worker = FastFlattenerWorker(
             mo2_dir=mo2_path,
@@ -1056,7 +1245,11 @@ class MainWindow(QMainWindow):
             copy_inis=copy_inis,
             inis_dest=inis_dest,
             i18n=self.i18n,
+            mac_enabled=self.card_mac.enabled(),
+            mac_bottle=self.card_mac.manual_choice,  # None tant que l'utilisateur n'a pas choisi : détection automatique
         )
+        self._worker.mac_stage.connect(self._on_mac_stage)
+        self._worker.mac_report.connect(self._on_mac_report)
         self._worker.progress_val.connect(self.progress_bar.setValue)
         self._worker.progress_val.connect(self._dock.set)
         self._worker.log_msg.connect(self._log)
@@ -1074,6 +1267,7 @@ class MainWindow(QMainWindow):
 
     def _on_finished(self):
         self._dock.clear()
+        self._schedule_mac()  # le jeu cible a changé : l'annonce redit vrai
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_done"))
@@ -1081,6 +1275,7 @@ class MainWindow(QMainWindow):
 
     def _on_stopped(self):
         self._dock.clear()
+        self._schedule_mac()  # le jeu cible a changé : l'annonce redit vrai
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_stopped"))
@@ -1088,6 +1283,7 @@ class MainWindow(QMainWindow):
 
     def _on_error(self, err_msg: str):
         self._dock.clear()
+        self._schedule_mac()  # le jeu cible a changé : l'annonce redit vrai
         self.btn_run.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.status_lbl.setText(self.i18n.t("header_status_error"))

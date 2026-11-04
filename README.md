@@ -23,6 +23,7 @@ Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads 
 - Separates the game root (Root mods, Stock Game) from the **Data** folder.
 - **Hard links** option to save disk space, or full standalone copy.
 - Optional deployment of **plugins.txt** and the game **INI** files.
+- **Mac adaptation** (DXMT, ENB, DLSS) at the end of the assembly: each fix is announced beforehand, shown in a « Mac report » card afterwards and can be undone one by one or all at once. Bottled Shaders is never downloaded or bundled: the report points to an archive already in your MO2 or mABBAJACK downloads, or to its Nexus page.
 - Excludes .pdb, .mohidden and junk files; stop button and stop-on-error option.
 - Interface in **English, French, Italian and Spanish** (follows your Mac's language; can be changed in the app).
 
@@ -90,6 +91,7 @@ Le système de fichiers virtuel de Mod Organizer 2 ne fonctionne pas sur Mac. mO
 - Sépare la racine du jeu (mods Root, Stock Game) du dossier **Data**.
 - Option **liens physiques** pour économiser l'espace disque, ou copie autonome complète.
 - Déploiement facultatif de **plugins.txt** et des fichiers **INI** du jeu.
+- **Adaptation au Mac** (DXMT, ENB, DLSS) à la fin de l'assemblage : chaque correctif est annoncé avant, détaillé ensuite dans une carte « Bilan Mac » et annulable un par un ou tout d'un coup. Bottled Shaders n'est jamais téléchargé ni embarqué : le bilan indique l'archive déjà présente dans les téléchargements de MO2 ou de mABBAJACK, ou renvoie à sa page Nexus.
 - Exclut les .pdb, .mohidden et fichiers parasites ; bouton d'arrêt et option d'arrêt sur erreur.
 - Interface en **français, anglais, italien et espagnol** (suit la langue du Mac ; modifiable dans l'appli).
 

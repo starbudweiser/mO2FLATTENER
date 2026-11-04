@@ -41,7 +41,27 @@ if ! command -v pyinstaller &>/dev/null; then
     pip3 install pyinstaller
 fi
 
-# 3. Compilation (sorties temporaires hors du projet), livraison à la racine et signature stable (_tools)
+# 3. mackit : l'outil en ligne de commande du moteur Mac commun (DXMT, ENB, DLSS), embarqué tel quel.
+# Source unique dans _tools/shared/mackit (compilé par son build.sh si absent ou plus vieux que sa source).
+# Hors de ce dossier d'outils (dépôt GitHub seul), MACKIT_BIN=<chemin> en donne un ; sans lui l'appli se compile
+# quand même et l'annonce « Adaptation au Mac » dit que l'outil est introuvable.
+MACKIT_DIR="$(cd "$ROOT/.." && pwd)/_tools/shared/mackit"
+MACKIT_BIN="${MACKIT_BIN:-$MACKIT_DIR/dist/mackit}"
+if [ -z "${MACKIT_NO_BUILD:-}" ] && [ -x "$MACKIT_DIR/build.sh" ]; then
+    if [ ! -x "$MACKIT_BIN" ] || [ -n "$(find "$MACKIT_DIR/cli" "$MACKIT_DIR/src" -type f -name '*.ts' -newer "$MACKIT_BIN" -print -quit)" ]; then
+        echo "🔧 Compilation de mackit..."
+        "$MACKIT_DIR/build.sh"
+    fi
+fi
+MACKIT_ARGS=()
+if [ -x "$MACKIT_BIN" ]; then
+    echo "✓ mackit embarqué : $MACKIT_BIN"
+    MACKIT_ARGS=(--add-binary "$MACKIT_BIN:.")
+else
+    echo "ATTENTION : mackit introuvable ($MACKIT_BIN) : l'adaptation au Mac sera indisponible." >&2
+fi
+
+# 4. Compilation (sorties temporaires hors du projet), livraison à la racine et signature stable (_tools)
 echo "📦 Compilation de ${APP_NAME}..."
 # Lanceur PyInstaller compilé depuis les sources, contre les faux positifs antivirus (absent hors de ce dossier d'outils : lanceur standard).
 PYI_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/_tools/pyinstaller_source.sh"
@@ -53,6 +73,7 @@ pyinstaller \
     --distpath "$WORK_DIR/dist" \
     --workpath "$WORK_DIR/build" \
     --specpath "$WORK_DIR" \
+    ${MACKIT_ARGS[@]+"${MACKIT_ARGS[@]}"} \
     "$MAIN_SCRIPT"
 rm -rf "$ROOT/${APP_NAME}.app"
 mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
@@ -61,6 +82,13 @@ mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
 SIGN_APP="$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh"
 if [ -x "$SIGN_APP" ]; then
     "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.3.0
+    # mackit est dans l'.app : --deep l'a signé avec l'identité de l'appli ; on le vérifie (sans lui, l'adaptation ne tourne pas)
+    EMBEDDED="$(find "$ROOT/${APP_NAME}.app/Contents" -type f -name mackit -perm -u+x -print -quit)"
+    if [ -n "$EMBEDDED" ]; then
+        codesign --verify --strict "$EMBEDDED" && echo "✓ mackit signé dans l'.app : ${EMBEDDED#$ROOT/}"
+    elif [ -x "$MACKIT_BIN" ]; then
+        echo "Erreur : mackit absent de l'.app." >&2; exit 1
+    fi
 else
     echo "_tools/sign_app.sh absent : signature ad hoc."
     codesign --force --deep --sign - "$ROOT/${APP_NAME}.app"
