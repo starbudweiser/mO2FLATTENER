@@ -306,13 +306,26 @@ class TestMackit(unittest.TestCase):
         self.assertTrue(report["error"])
         self.assertEqual(report["items"], [])
 
-    def test_no_bottle_applies_only_the_game_fixes(self):
-        report = mac_adapt.finish(self.game, None)
-        ids = {i["id"]: i["status"] for i in report["items"]}
-        self.assertEqual(ids["displayTweaks"], "applied")
-        self.assertEqual(ids["engine"], "skipped")
-        self.assertEqual(report["items"][-1]["reason"]["key"], "mackit.skip.noBottle")
-        self.assertEqual(mac_adapt.undo(self.game, "all")["ok"], True)
+    def test_kit_without_a_bottle_touches_nothing(self):
+        """Le kit est pour une bouteille CrossOver : sans bouteille, aucune demi-mesure et rien d'écrit."""
+        events = []
+        report = mac_adapt.finish(self.game, None, notify=lambda event, payload: events.append(event))
+        self.assertTrue(report["no_bottle"])
+        self.assertEqual((report["mode"], report["items"], report["error"]), ("crossover", [], None))
+        self.assertEqual(events, ["no_bottle"])
+        self.assertEqual(tree(self.base), self.original)
+        self.assertEqual(mac_adapt.preview(self.game, None), {"kind": "nobottle"})
+
+    def test_stock_folder_touches_nothing_and_does_not_even_start_the_tool(self):
+        hide, mac_adapt.mackit_path = mac_adapt.mackit_path, lambda: None  # même sans l'outil
+        try:
+            events = []
+            report = mac_adapt.finish_stock(self.game, lambda event, payload: events.append(event))
+        finally:
+            mac_adapt.mackit_path = hide
+        self.assertEqual(report["mode"], "stock")
+        self.assertEqual((report["items"], report["applied"], report["error"], report["unavailable"]), ([], [], None, False))
+        self.assertEqual(events, ["stock"])
         self.assertEqual(tree(self.base), self.original)
 
 
@@ -334,9 +347,9 @@ class TestWithoutMackit(unittest.TestCase):
     def test_missing_tool_is_reported_not_raised(self):
         self.assertTrue(mac_adapt.run(["bottles"]).get("unavailable"))
         self.assertEqual(mac_adapt.list_bottles(), [])
-        self.assertEqual(mac_adapt.preview(Path("/nope"), None), {"kind": "unavailable"})
+        self.assertEqual(mac_adapt.preview(Path("/nope"), "/une/bouteille"), {"kind": "unavailable"})
         with tempfile.TemporaryDirectory() as tmp:
-            report = mac_adapt.finish(Path(tmp), None)
+            report = mac_adapt.finish(Path(tmp), "/une/bouteille")
             self.assertTrue(report["unavailable"])
             self.assertEqual(report["items"], [])
             self.assertEqual(mac_adapt.undo_previous(Path(tmp)), 0)

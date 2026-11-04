@@ -538,10 +538,12 @@ class FastFlattenerWorker(QThread):
         i18n: I18nManager,
         parent=None,
         mac_enabled: bool = False,
-        mac_bottle: str | None = None,  # None : la bouteille qui contient le jeu, sinon la première CrossOver ; "" : aucune
+        mac_bottle: str | None = None,  # None : la bouteille qui contient le jeu, sinon la première CrossOver
+        mac_mode: str | None = None,  # "stock" (dossier universel), "crossover" (kit DXMT) ; None : selon mac_enabled
     ):
         super().__init__(parent)
-        self.mac_enabled = mac_enabled
+        self.mac_mode = mac_mode or ("crossover" if mac_enabled else None)
+        self.mac_enabled = self.mac_mode == "crossover"
         self.mac_bottle = mac_bottle
         self.mo2_dir = mo2_dir
         self.modlist_file = modlist_file
@@ -572,6 +574,10 @@ class FastFlattenerWorker(QThread):
             self.log_msg.emit(t("log_mac_ok", title=mackit_text(t, payload["title"])))
         elif event == "failed":
             self.log_msg.emit(t("log_mac_failed", title=mackit_text(t, payload["title"])))
+        elif event == "stock":
+            self.log_msg.emit(t("log_mac_stock"))
+        elif event == "no_bottle":
+            self.log_msg.emit(t("log_mac_no_bottle"))
         elif event == "none":
             self.log_msg.emit(t("log_mac_none"))
         elif event == "done":
@@ -584,7 +590,11 @@ class FastFlattenerWorker(QThread):
             self.log_msg.emit(t("log_mac_prev_refused"))
 
     def _run_mac_stage(self):
-        """Adaptation au Mac sur le jeu assemblé. Une erreur de l'outil ne fait jamais échouer l'assemblage."""
+        """Adaptation au Mac sur le jeu assemblé. Une erreur de l'outil ne fait jamais échouer l'assemblage.
+        Dossier universel (Stock) : rien n'est copié ni modifié, seul le bilan « aucune adaptation » est émis."""
+        if self.mac_mode == "stock":
+            self.mac_report.emit(mac_adapt.finish_stock(self.dest_game_root, self._mac_notify))
+            return
         try:
             self.mac_stage.emit()
             self.progress_val.emit(97)
@@ -682,7 +692,7 @@ class FastFlattenerWorker(QThread):
                         shutil.copy2(src_ini, self.inis_dest / src_ini.name)
                         self.log_msg.emit(t("log_ini_deployed", name=src_ini.name))
 
-            if self.mac_enabled and not self._is_stopped:
+            if self.mac_mode and not self._is_stopped:
                 self._run_mac_stage()
 
             self.progress_val.emit(100)
@@ -1126,13 +1136,14 @@ class MainWindow(QMainWindow):
         if self._worker and self._worker.isRunning():
             return
         self._mac_seq += 1
-        if not self.card_mac.enabled():
-            self.card_mac.show_state({"kind": "off"})
-            return
-        if self.card_mac._state.get("kind") != "plan":  # une annonce déjà affichée reste jusqu'à la suivante (pas de saut)
+        kit = self.card_mac.enabled()
+        if kit and self.card_mac._state.get("kind") != "plan":  # une annonce déjà affichée reste jusqu'à la suivante (pas de saut)
             self.card_mac.show_state({"kind": "loading"})
+        elif not kit:
+            self.card_mac.show_state({"kind": "off"})
+        # les bouteilles sont cherchées même en dossier universel : sans bouteille CrossOver, le kit n'est pas proposé
         worker = self._track(MacPlanWorker(self._mac_seq, self.txt_dest.text(), self.txt_mo2.text(),
-                                           self.txt_modlist.text(), self.card_mac.manual_choice, self))
+                                           self.txt_modlist.text(), self.card_mac.manual_choice, self, kit=kit))
         worker.done.connect(self._on_mac_plan)
         worker.start()
 
@@ -1245,7 +1256,7 @@ class MainWindow(QMainWindow):
             copy_inis=copy_inis,
             inis_dest=inis_dest,
             i18n=self.i18n,
-            mac_enabled=self.card_mac.enabled(),
+            mac_mode=self.card_mac.mode(),
             mac_bottle=self.card_mac.manual_choice,  # None tant que l'utilisateur n'a pas choisi : détection automatique
         )
         self._worker.mac_stage.connect(self._on_mac_stage)

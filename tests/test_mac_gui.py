@@ -36,7 +36,8 @@ class TestAssemblyWithMac(unittest.TestCase):
         (self.mo2 / "mods" / "Mod" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").write_text("[Render]\nSwapEffect = auto\n")
         self.dest = base / "Game"
         state = base / "state.json"
-        state.write_text(json.dumps({"roots": [], "exclusive": False}))
+        # aucune bouteille visible : jamais une vraie bouteille de ce Mac (exclusive + une bouteille active qui n'existe pas)
+        state.write_text(json.dumps({"roots": [], "activeBottle": str(base / "aucune"), "exclusive": True}))
         self.saved = {k: os.environ.get(k) for k in ("MO2FLATTENER_MAC_STATE", "MO2FLATTENER_MDLSS_BRIDGE")}
         os.environ["MO2FLATTENER_MAC_STATE"] = str(state)
         os.environ["MO2FLATTENER_MDLSS_BRIDGE"] = str(base / "none.dll")
@@ -51,13 +52,13 @@ class TestAssemblyWithMac(unittest.TestCase):
                 os.environ[key] = value
         self.tmp.cleanup()
 
-    def assemble(self, mac_enabled=True, mac_bottle=None):
+    def assemble(self, mac_enabled=True, mac_bottle=None, mac_mode=None):
         i18n = self.gui.I18nManager()
         i18n._current_lang = "fr"  # les essais lisent le journal en français, quelle que soit la langue du Mac
         worker = self.gui.FastFlattenerWorker(
             mo2_dir=self.mo2, modlist_file=self.mo2 / "profiles" / "Default" / "modlist.txt", dest_game_root=self.dest,
             use_hardlinks=False, stop_on_error=True, copy_plugins=False, plugins_dest=None, copy_inis=False,
-            inis_dest=None, i18n=i18n, mac_enabled=mac_enabled, mac_bottle=mac_bottle)
+            inis_dest=None, i18n=i18n, mac_enabled=mac_enabled, mac_bottle=mac_bottle, mac_mode=mac_mode)
         seen = {"finished": 0, "errors": [], "reports": [], "stage": 0, "log": []}
         worker.finished_ok.connect(lambda: seen.__setitem__("finished", seen["finished"] + 1))
         worker.error_raised.connect(seen["errors"].append)
@@ -69,7 +70,7 @@ class TestAssemblyWithMac(unittest.TestCase):
 
     def test_tool_missing_does_not_fail_the_assembly(self):
         mac_adapt.mackit_path = lambda: None
-        seen = self.assemble()
+        seen = self.assemble(mac_bottle="/une/bouteille")
         self.assertEqual((seen["finished"], seen["errors"]), (1, []))
         self.assertTrue((self.dest / "Data" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").is_file())
         self.assertTrue(seen["reports"][0]["unavailable"])
@@ -93,22 +94,26 @@ class TestAssemblyWithMac(unittest.TestCase):
         self.assertEqual((seen["finished"], seen["reports"], seen["stage"]), (1, [], 0))
         self.assertFalse((self.dest / "_MAC_BACKUP").exists())
 
-    @unittest.skipIf(mac_adapt.mackit_path() is None, "mackit absent")
-    def test_game_fixes_are_announced_then_applied_without_a_bottle(self):
-        seen = self.assemble()
-        report = seen["reports"][0]
-        self.assertEqual((seen["finished"], seen["errors"], seen["stage"]), (1, [], 1))
-        statuses = {i["id"]: i["status"] for i in report["items"]}
-        self.assertEqual(statuses.get("displayTweaks"), "applied")
+    def test_stock_folder_is_delivered_untouched_with_a_simple_report(self):
+        seen = self.assemble(mac_mode="stock")
+        self.assertEqual((seen["finished"], seen["errors"], seen["stage"]), (1, [], 0))  # pas d'étape Mac, rien à interrompre
+        self.assertEqual([(r["mode"], r["items"]) for r in seen["reports"]], [("stock", [])])
         ini = (self.dest / "Data" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").read_text()
-        self.assertIn("flip_discard", ini)
-        log = "\n".join(seen["log"])
-        self.assertLess(log.index("À appliquer"), log.index("appliqué"))
-        # un nouvel assemblage annule d'abord l'adaptation précédente, puis la refait
-        seen2 = self.assemble()
-        self.assertTrue(any("précédente annulée" in line for line in seen2["log"]))
-        self.assertEqual({i["id"]: i["status"] for i in seen2["reports"][0]["items"]}.get("displayTweaks"), "applied")
-        self.assertEqual(ini.count("SwapEffect"), 1)
+        self.assertNotIn("flip_discard", ini)
+        self.assertFalse((self.dest / "_MAC_BACKUP").exists())
+        self.assertTrue(any("Dossier universel" in line for line in seen["log"]))
+
+    @unittest.skipIf(mac_adapt.mackit_path() is None, "mackit absent")
+    def test_kit_without_a_bottle_touches_nothing(self):
+        seen = self.assemble(mac_mode="crossover")  # aucune bouteille visible : le kit ne fait rien
+        report = seen["reports"][0]
+        self.assertEqual((seen["finished"], seen["errors"]), (1, []))
+        self.assertTrue(report["no_bottle"])
+        self.assertEqual(report["items"], [])
+        ini = (self.dest / "Data" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").read_text()
+        self.assertNotIn("flip_discard", ini)
+        self.assertFalse((self.dest / "_MAC_BACKUP").exists())
+        self.assertTrue(any("aucune bouteille CrossOver" in line for line in seen["log"]))
 
     @unittest.skipIf(mac_adapt.mackit_path() is None, "mackit absent")
     def test_bottle_holding_the_game_is_detected_when_the_assembly_ends(self):
@@ -123,13 +128,23 @@ class TestAssemblyWithMac(unittest.TestCase):
         self.assertEqual(seen["errors"], [])
         statuses = {i["id"]: i["status"] for i in seen["reports"][0]["items"]}
         self.assertEqual(statuses.get("engine"), "applied")
+        self.assertEqual(statuses.get("displayTweaks"), "applied")
         self.assertIn("dxmt", (bottle / "cxbottle.conf").read_text().lower())
-        # « aucune bouteille » choisie à la main : le moteur graphique n'est pas touché
+        ini = (self.dest / "Data" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").read_text()
+        self.assertIn("flip_discard", ini)
+        log = "\n".join(seen["log"])
+        self.assertLess(log.index("À appliquer"), log.index("appliqué"))
+        # un nouvel assemblage annule d'abord l'adaptation précédente, puis la refait
+        seen2 = self.assemble(mac_bottle=None)
+        self.assertTrue(any("précédente annulée" in line for line in seen2["log"]))
+        self.assertEqual({i["id"]: i["status"] for i in seen2["reports"][0]["items"]}.get("displayTweaks"), "applied")
+        self.assertEqual((self.dest / "Data" / "SKSE" / "Plugins" / "SSEDisplayTweaks.ini").read_text().count("SwapEffect"), 1)
+        # le kit demande une bouteille : sans elle, plus de demi-mesure, et le moteur graphique n'est pas touché
         mac_adapt.undo(self.dest, "all")
         self.assertIn("dxvk", (bottle / "cxbottle.conf").read_text().lower())
         seen = self.assemble(mac_bottle="")
-        statuses = {i["id"]: i["status"] for i in seen["reports"][0]["items"]}
-        self.assertEqual(statuses.get("engine"), "skipped")
+        self.assertTrue(seen["reports"][0]["no_bottle"])
+        self.assertEqual(seen["reports"][0]["items"], [])
         self.assertIn("dxvk", (bottle / "cxbottle.conf").read_text().lower())
 
 

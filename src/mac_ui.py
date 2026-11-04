@@ -13,7 +13,8 @@ from typing import Any, Callable, Dict, List, Optional
 from PyQt6.QtCore import QThread, QTimer, QUrl, Qt, pyqtSignal
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import (
-    QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel, QPushButton, QScrollArea, QVBoxLayout, QWidget,
+    QButtonGroup, QComboBox, QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QScrollArea,
+    QVBoxLayout, QWidget,
 )
 
 import mac_adapt
@@ -194,10 +195,72 @@ class BottledBlock(QFrame):
 # CARTE « 3. ADAPTATION AU MAC » (annonce)
 # ==============================================================================
 
-class MacAnnounceCard(QFrame):
-    """Case cochée par défaut, bouteille CrossOver (détectée, modifiable) et ce que `mackit plan` annonce."""
+class ModeOption(QFrame):
+    """Une façon de rendre le jeu : bouton radio et titre, ce qu'elle fait, puis quatre lignes fixes (dans le dossier,
+    dans la bouteille, ensuite, annulation). Un clic n'importe où sur la carte la choisit."""
 
-    changed = pyqtSignal()  # l'utilisateur a coché la case ou choisi une autre bouteille
+    ROWS = 4
+
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("MacMode")
+        self.radio = QRadioButton()
+        self.radio.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.radio.setStyleSheet("font-size: 13px; font-weight: 600;")
+        self.lead = _rich_label()
+        self.labels = [QLabel() for _ in range(self.ROWS)]
+        self.values = [_rich_label() for _ in range(self.ROWS)]
+        self.notice = _rich_label()
+
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(16, 14, 16, 14)
+        lay.setSpacing(8)
+        lay.addWidget(self.radio)
+        body = QVBoxLayout()  # aligné sous le titre, à droite du bouton radio
+        body.setContentsMargins(26, 0, 0, 0)
+        body.setSpacing(8)
+        body.addWidget(self.lead)
+        grid = QGridLayout()
+        grid.setContentsMargins(0, 0, 0, 0)
+        grid.setHorizontalSpacing(14)
+        grid.setVerticalSpacing(6)
+        grid.setColumnStretch(1, 1)
+        for row, (label, value) in enumerate(zip(self.labels, self.values)):
+            label.setFixedWidth(160)
+            label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+            label.setStyleSheet(f"font-size: 11px; font-weight: bold; color: {socle_qt.c('text-subtle')}; letter-spacing: 0.5px;")
+            grid.addWidget(label, row, 0, Qt.AlignmentFlag.AlignTop)
+            grid.addWidget(value, row, 1)
+        body.addLayout(grid)
+        body.addWidget(self.notice)
+        lay.addLayout(body)
+        self.set_selected(False)
+
+    def set_content(self, title: str, lead: str, rows: List[tuple], notice: str = "") -> None:
+        self.radio.setText(title)
+        self.lead.setText(_muted(esc(lead), 12))
+        for label, value, (name, text) in zip(self.labels, self.values, rows):
+            label.setText(name.upper())
+            value.setText(_muted(esc(text), 12))
+        self.notice.setText(f'<span style="color:{socle_qt.c("warning")};font-size:12px">⚠ {esc(notice)}</span>' if notice else "")
+        self.notice.setVisible(bool(notice))
+
+    def set_selected(self, selected: bool) -> None:
+        border = socle_qt.c("accent") if selected else socle_qt.c("border-subtle")
+        self.setStyleSheet(
+            f"QFrame#MacMode {{ background-color: {socle_qt.c('bg-inset')}; border: 1px solid {border}; border-radius: 8px; }}")
+
+    def mousePressEvent(self, event) -> None:  # noqa: N802 (Qt)
+        if self.radio.isEnabled():
+            self.radio.click()
+        super().mousePressEvent(event)
+
+
+class MacAnnounceCard(QFrame):
+    """Le choix entre le dossier universel (Stock : rien n'est copié, présélectionné) et le kit DXMT pour une bouteille
+    CrossOver (détectée, modifiable), puis ce que `mackit plan` annonce si le kit est choisi."""
+
+    changed = pyqtSignal()  # l'utilisateur a changé de mode ou choisi une autre bouteille
 
     def __init__(self, tr: Tr):
         super().__init__()
@@ -205,9 +268,10 @@ class MacAnnounceCard(QFrame):
         self._tr = tr
         self._state: Json = {"kind": "loading"}
         self._bottles: List[Json] = []
+        self._bottles_known = False  # tant que la première analyse n'est pas revenue, on ne dit pas « aucune bouteille »
         self._how: Optional[str] = None
         self.manual = False
-        self.manual_choice: Optional[str] = None  # None : automatique ; "" : aucune bouteille ; sinon chemin
+        self.manual_choice: Optional[str] = None  # None : automatique ; sinon chemin de la bouteille choisie
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(MARGIN, 20, MARGIN, 20)
@@ -217,13 +281,19 @@ class MacAnnounceCard(QFrame):
         self.title.setStyleSheet(TITLE_STYLE)
         lay.addWidget(self.title)
 
-        self.chk = QCheckBox()
-        self.chk.setChecked(True)  # cochée par défaut, non mémorisée
-        self.chk.toggled.connect(self._on_toggled)
-        lay.addWidget(self.chk)
-
-        self.intro = _rich_label()
+        self.intro = _rich_label()  # « Comment utiliserez-vous le jeu assemblé ? »
         lay.addWidget(self.intro)
+
+        self.opt_stock = ModeOption()
+        self.opt_kit = ModeOption()
+        self.group = QButtonGroup(self)  # exclusif : un seul mode à la fois
+        self.group.addButton(self.opt_stock.radio)
+        self.group.addButton(self.opt_kit.radio)
+        self.opt_stock.radio.setChecked(True)  # Stock présélectionné, non mémorisé
+        self.opt_stock.radio.toggled.connect(self._on_mode)
+        self.opt_kit.radio.toggled.connect(self._on_mode)
+        lay.addWidget(self.opt_stock)
+        lay.addWidget(self.opt_kit)
 
         self.bottle_box = QWidget()
         bl = QVBoxLayout(self.bottle_box)
@@ -263,8 +333,19 @@ class MacAnnounceCard(QFrame):
         self.render()
 
     # --- accès pour la fenêtre -----------------------------------------------------
+    def kit_available(self) -> bool:
+        """Le kit est pour une bouteille CrossOver et demande `mackit` : sans l'un ou l'autre, il n'est pas proposé."""
+        if self._state.get("kind") == "unavailable":
+            return False
+        return bool(self._bottles) or not self._bottles_known
+
+    def mode(self) -> str:
+        """« stock » (dossier universel) ou « crossover » (kit DXMT)."""
+        return "crossover" if self.opt_kit.radio.isChecked() and self.kit_available() else "stock"
+
     def enabled(self) -> bool:
-        return self.chk.isChecked()
+        """Le kit est choisi : l'annonce et l'adaptation de fin d'assemblage sont utiles."""
+        return self.mode() == "crossover"
 
     def selected_bottle(self) -> Optional[str]:
         data = self.combo.currentData()
@@ -272,48 +353,46 @@ class MacAnnounceCard(QFrame):
 
     def set_bottles(self, bottles: List[Json], selected: Optional[str], how: Optional[str]) -> None:
         """Remplit la liste ; `selected` est la bouteille retenue (détectée ou choisie), `how` : detected/first/manual."""
-        self._bottles, self._how = bottles, how
+        self._bottles, self._how, self._bottles_known = bottles, how, True
         self.combo.blockSignals(True)
         self.combo.clear()
         for bottle in bottles:
             self.combo.addItem(bottle["name"], bottle["path"])
-        self.combo.addItem(self._tr("mac_bottle_none"), None)
-        index = next((i for i, b in enumerate(bottles) if b["path"] == selected), len(bottles))
+        index = next((i for i, b in enumerate(bottles) if b["path"] == selected), 0)
         self.combo.setCurrentIndex(index)
-        self.combo.setEnabled(bool(bottles))
+        self.combo.setEnabled(len(bottles) > 1)
         self.combo.blockSignals(False)
         self._render_hint()
+        if not bottles and self.opt_kit.radio.isChecked():  # plus de bouteille : retour au dossier universel
+            self.opt_stock.radio.setChecked(True)
+        self.render()
 
     def show_state(self, state: Json) -> None:
         self._state = state
         self.render()
 
     # --- événements ---------------------------------------------------------------
-    def _on_toggled(self, _checked: bool) -> None:
+    def _on_mode(self, _checked: bool) -> None:
+        self.opt_stock.set_selected(self.opt_stock.radio.isChecked())
+        self.opt_kit.set_selected(self.opt_kit.radio.isChecked())
         self.render()
         self.changed.emit()
 
     def _on_activated(self, _index: int) -> None:
         self.manual = True
-        self.manual_choice = self.combo.currentData() or ""
+        self.manual_choice = self.combo.currentData()
         self._how = "manual"
         self._render_hint()
         self.changed.emit()
 
     # --- rendu --------------------------------------------------------------------
     def retranslate(self) -> None:
-        none_index = self.combo.count() - 1
-        if none_index >= 0 and self.combo.itemData(none_index) is None:
-            self.combo.setItemText(none_index, self._tr("mac_bottle_none"))
         self.render()
 
     def _render_hint(self) -> None:
         tr = self._tr
-        if not self._bottles:
-            text = tr("mac_bottle_absent")
-        else:
-            text = {"detected": tr("mac_bottle_detected"), "first": tr("mac_bottle_first"),
-                    "manual": tr("mac_bottle_manual")}.get(self._how or "", "")
+        text = {"detected": tr("mac_bottle_detected"), "first": tr("mac_bottle_first"),
+                "manual": tr("mac_bottle_manual")}.get(self._how or "", "") if self._bottles else ""
         self.hint.setText(_muted(esc(text), 11))
 
     def _add_note(self, text: str, color: Optional[str] = None) -> None:
@@ -351,8 +430,17 @@ class MacAnnounceCard(QFrame):
     def render(self) -> None:
         tr = self._tr
         self.title.setText(tr("card3_title"))
-        self.chk.setText(tr("chk_mac"))
-        self.intro.setText(_muted(esc(tr("mac_intro")), 12))
+        self.intro.setText(_muted(esc(tr("mac_mode_choose")), 12))
+        rows = [("mac_row_folder", "folder"), ("mac_row_bottle", "bottle"), ("mac_row_after", "after"), ("mac_row_undo", "undo")]
+        self.opt_stock.set_content(
+            tr("mac_mode_stock"), tr("mac_mode_stock_lead"),
+            [(tr(label), tr(f"mac_mode_stock_{name}")) for label, name in rows])
+        kit_off = not self.kit_available()
+        self.opt_kit.set_content(
+            tr("mac_mode_kit"), tr("mac_mode_kit_lead"),
+            [(tr(label), tr(f"mac_mode_kit_{name}")) for label, name in rows],
+            notice=tr("mac_kit_unavailable") if kit_off and (self._bottles_known or self._state.get("kind") == "unavailable") else "")
+        self.opt_kit.radio.setEnabled(not kit_off)
         self.lbl_bottle.setText(tr("lbl_bottle"))
         on = self.enabled()
         self.bottle_box.setVisible(on and self._state.get("kind") != "unavailable")
@@ -366,6 +454,8 @@ class MacAnnounceCard(QFrame):
             self._add_note(tr("mac_loading"))
         elif kind == "unavailable":
             self._add_note(tr("mac_unavailable"), socle_qt.c("warning"))
+        elif kind == "nobottle":
+            self._add_note(tr("mac_kit_unavailable"), socle_qt.c("warning"))
         elif kind == "nodest":
             self._add_note(tr("mac_nodest"))
         elif kind == "error":
@@ -394,9 +484,7 @@ class MacAnnounceCard(QFrame):
             show_bottled = True
         self.scroll.setVisible(self.list_lay.count() > 0)
         self.bottled.set_info(self._state.get("bottled") if show_bottled else None)
-        if not on:
-            self.footer.setText(_muted(esc(tr("mac_off")), 12))
-        elif kind in ("plan", "nodest"):
+        if on and kind in ("plan", "nodest"):
             self.footer.setText(_muted(esc(tr("mac_promise")), 12))
         else:
             self.footer.setText("")
@@ -508,7 +596,8 @@ class MacReportCard(QFrame):
 
     def render(self) -> None:
         report, tr = self._report, self._tr
-        self.title.setText(tr("rep_title"))
+        stock = bool(report) and report.get("mode") == "stock"
+        self.title.setText(tr("rep_stock_title" if stock else "rep_title"))
         if report is None:
             return
         _clear(self.rows)
@@ -519,8 +608,12 @@ class MacReportCard(QFrame):
         self.scroll.setVisible(bool(items))
         applied_left = any(i["status"] == "applied" for i in items)
         undoable = any(i.get("undoable") for i in items)
-        if self._busy:
+        if stock:
+            summary, color = tr("rep_stock_text"), "success-soft"
+        elif self._busy:
             summary, color = tr("rep_undoing"), "text-muted"
+        elif report.get("no_bottle"):
+            summary, color = tr("rep_no_bottle"), "warning"
         elif report.get("error"):
             summary, color = tr("rep_error"), "danger-soft"
         elif report.get("unavailable"):
@@ -551,13 +644,15 @@ class MacReportCard(QFrame):
 # ==============================================================================
 
 class MacPlanWorker(QThread):
-    """Annonce : bouteilles, bouteille retenue et `mackit plan` sur le jeu cible."""
+    """Annonce : bouteilles, bouteille retenue et, si le kit est choisi (`kit`), `mackit plan` sur le jeu cible.
+    Les bouteilles sont cherchées dans tous les cas : sans bouteille CrossOver, le kit n'est pas proposé."""
 
     done = pyqtSignal(object)
 
-    def __init__(self, seq: int, dest: str, mo2_dir: str, modlist: str, choice: Optional[str], parent=None):
+    def __init__(self, seq: int, dest: str, mo2_dir: str, modlist: str, choice: Optional[str], parent=None, kit: bool = True):
         super().__init__(parent)
         self.seq, self.dest, self.mo2_dir, self.modlist, self.choice = seq, dest.strip(), mo2_dir.strip(), modlist.strip(), choice
+        self.kit = kit
 
     def run(self) -> None:
         out: Json = {"seq": self.seq, "bottles": [], "bottle": None, "how": None, "state": {"kind": "unavailable"}}
@@ -568,15 +663,15 @@ class MacPlanWorker(QThread):
             bottles = mac_adapt.list_bottles()
             if self.choice is None:
                 bottle, how = mac_adapt.detect_bottle(bottles, self.dest or None)
-            elif self.choice == "":
-                bottle, how = None, "manual"
             else:
                 bottle = next((b for b in bottles if b["path"] == self.choice), None)
                 how = "manual"
                 if bottle is None:
                     bottle, how = mac_adapt.detect_bottle(bottles, self.dest or None)
             out.update(bottles=bottles, bottle=bottle["path"] if bottle else None, how=how)
-            if not self.dest:
+            if not self.kit:
+                out["state"] = {"kind": "off"}  # dossier universel : rien à annoncer
+            elif not self.dest:
                 out["state"] = {"kind": "nodest"}
             else:
                 mods: List[str] = []

@@ -333,8 +333,11 @@ def summarize_plan(plan_obj: Json) -> Json:
 
 
 def preview(game: Path, bottle: Optional[str], mo2_dir: Optional[Path] = None, mods: Optional[List[str]] = None) -> Json:
-    """Annonce, avant l'assemblage. Un jeu cible qui n'existe pas encore est simulé sur un dossier vide : seuls les
-    correctifs de la bouteille ressortent, le reste sera examiné à la fin de l'assemblage (`future`)."""
+    """Annonce du kit DXMT, avant l'assemblage. Un jeu cible qui n'existe pas encore est simulé sur un dossier vide : seuls
+    les correctifs de la bouteille ressortent, le reste sera examiné à la fin de l'assemblage (`future`).
+    Le kit est pour une bouteille CrossOver : sans bouteille, rien n'est annoncé (`nobottle`), jamais de demi-mesure."""
+    if not bottle:
+        return {"kind": "nobottle"}
     future = not (game / "Data").is_dir()
     version = installed_bottled_version(mo2_dir, mods or []) if mo2_dir and mods else None
     with tempfile.TemporaryDirectory(prefix="mo2flattener_mac_") as empty:
@@ -374,18 +377,31 @@ def undo_previous(game: Path, notify: Optional[Notify] = None) -> int:
         return 0
 
 
+def finish_stock(game: Path, notify: Optional[Notify] = None) -> Json:
+    """Dossier universel (Stock) : rien n'est copié ni modifié, `mackit` n'est même pas lancé. Bilan simple."""
+    notify = notify or (lambda event, payload: None)
+    notify("stock", {})
+    return {"mode": "stock", "game": str(game), "bottle": None, "items": [], "discarded": [], "bottled": None,
+            "applied": [], "error": None, "unavailable": False, "undone": 0}
+
+
 def finish(game: Path, bottle: Optional[str], mo2_dir: Optional[Path] = None, mods: Optional[List[str]] = None,
            notify: Optional[Notify] = None) -> Json:
-    """Fin d'assemblage : `plan` puis `apply` sur le jeu assemblé, et le bilan. Ne lève jamais.
+    """Fin d'assemblage, kit DXMT pour une bouteille CrossOver : `plan` puis `apply` sur le jeu assemblé, et le bilan.
+    Sans bouteille, rien n'est touché (`no_bottle`). Ne lève jamais.
 
     `notify(événement, données)` annonce chaque étape (start, fix, skip, applied, failed, none, done) pour le journal.
     Bilan : { game, bottle, items: [{ id, status: applied|failed|skipped, undoable, title, detail?, text?, reason?,
     files, changes? }], discarded, bottled, applied, error?, unavailable? }.
     """
     notify = notify or (lambda event, payload: None)
-    report: Json = {"game": str(game), "bottle": None, "items": [], "discarded": [], "bottled": None, "applied": [],
-                    "error": None, "unavailable": False, "undone": 0}
+    report: Json = {"mode": "crossover", "game": str(game), "bottle": None, "items": [], "discarded": [], "bottled": None,
+                    "applied": [], "error": None, "unavailable": False, "undone": 0}
     try:
+        if not bottle:  # le kit est pour une bouteille CrossOver : sans bouteille, aucune demi-mesure
+            report["no_bottle"] = True
+            notify("no_bottle", {})
+            return report
         notify("start", {})
         bottles = list_bottles() if bottle else []
         report["bottle"] = next((b for b in bottles if b["path"] == bottle), None)
