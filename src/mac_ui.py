@@ -85,6 +85,11 @@ def _button(text: str, handler: Callable[[], None], width: Optional[int] = None)
     return button
 
 
+# Les deux listes prennent toute la hauteur de leur contenu : c'est la page qui défile (Socle : « si elle dépasse, c'est la
+# page qui défile »), pas la carte. Un plafond de 460/520 px coupait une ligne en bas et superposait deux barres de défilement.
+NO_CAP = 100_000
+
+
 class FitScroll(QScrollArea):
     """Zone qui prend la hauteur de son contenu jusqu'à `max_height`, puis défile : rien n'est tronqué."""
 
@@ -247,7 +252,7 @@ class MacAnnounceCard(QFrame):
         self.list_lay = QVBoxLayout(inner)
         self.list_lay.setContentsMargins(0, 0, 0, 0)
         self.list_lay.setSpacing(8)
-        self.scroll = FitScroll(inner, 520)
+        self.scroll = FitScroll(inner, NO_CAP)
         lay.addWidget(self.scroll)
 
         self.bottled = BottledBlock(tr)
@@ -426,7 +431,7 @@ class MacReportCard(QFrame):
         self.rows = QVBoxLayout(inner)
         self.rows.setContentsMargins(0, 0, 0, 0)
         self.rows.setSpacing(8)
-        self.scroll = FitScroll(inner, 460)
+        self.scroll = FitScroll(inner, NO_CAP)
         lay.addWidget(self.scroll)
         self.bottled = BottledBlock(tr)
         lay.addWidget(self.bottled)
