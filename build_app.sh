@@ -81,7 +81,7 @@ mv "$WORK_DIR/dist/${APP_NAME}.app" "$ROOT/"
 # le dépôt GitHub seul), signature ad hoc pour que l'appli se lance quand même.
 SIGN_APP="$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh"
 if [ -x "$SIGN_APP" ]; then
-    "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.3.0
+    "$SIGN_APP" "$ROOT/${APP_NAME}.app" 1.4.0
     # mackit est dans l'.app : --deep l'a signé avec l'identité de l'appli ; on le vérifie (sans lui, l'adaptation ne tourne pas)
     EMBEDDED="$(find "$ROOT/${APP_NAME}.app/Contents" -type f -name mackit -perm -u+x -print -quit)"
     if [ -n "$EMBEDDED" ]; then

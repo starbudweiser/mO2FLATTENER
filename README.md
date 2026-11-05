@@ -27,6 +27,12 @@ Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads 
 - Excludes .pdb, .mohidden and junk files; stop button and stop-on-error option.
 - Interface in **English, French, Italian and Spanish** (follows your Mac's language; can be changed in the app).
 
+### What's new in 1.4.0
+
+- **Mac adaptation** (DXMT, ENB, DLSS) after the assembly, with a choice: universal folder (Stock, nothing added or changed) or kit for a CrossOver bottle; every fix is announced, reported afterwards and can be undone. An already adapted game says so.
+- Automatic updates: release notes in your language, then "Install and relaunch" (checksum, Developer ID signature and notarization checked). If you are on 1.3.0, install this version by hand once.
+- New "Language" menu in the menu bar; progress bar and percentage in the Dock icon during the assembly.
+
 ### What's new in 1.3.0
 
 - Signed with a Developer ID and notarized by Apple: macOS now opens the app without a security warning.
@@ -36,7 +42,7 @@ Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads 
 
 ### Updates
 
-The app checks once a day whether a newer release exists on GitHub and offers to open the Nexus page, remind you later or skip that version. Nothing is downloaded or installed automatically. The full history is in [CHANGELOG.md](CHANGELOG.md).
+The app checks once a day whether a newer release exists on GitHub, shows its notes in your language and offers to install it and relaunch (or to remind you later or skip that version). The download is checked (SHA-256, Developer ID signature, notarization) before it replaces the app. "Check for updates…" in the menu does the same on demand. The full history is in [CHANGELOG.md](CHANGELOG.md).
 
 ### Screenshots
 
@@ -95,6 +101,12 @@ Le système de fichiers virtuel de Mod Organizer 2 ne fonctionne pas sur Mac. mO
 - Exclut les .pdb, .mohidden et fichiers parasites ; bouton d'arrêt et option d'arrêt sur erreur.
 - Interface en **français, anglais, italien et espagnol** (suit la langue du Mac ; modifiable dans l'appli).
 
+### Nouveautés de la 1.4.0
+
+- **Adaptation au Mac** (DXMT, ENB, DLSS) après l'assemblage, au choix : dossier universel (Stock, rien n'est ajouté ni modifié) ou kit pour une bouteille CrossOver ; chaque correctif est annoncé, détaillé ensuite et annulable. Un jeu déjà adapté le dit.
+- Mise à jour automatique : notes de version dans votre langue, puis « Installer et relancer » (empreinte, signature Developer ID et notarisation vérifiées). Si vous êtes en 1.3.0, installez cette version à la main une fois.
+- Nouveau menu « Langue » dans la barre de menus ; jauge de progression et pourcentage dans l'icône du Dock pendant l'assemblage.
+
 ### Nouveautés de la 1.3.0
 
 - Signée avec un certificat Developer ID et notarisée par Apple : macOS ouvre désormais l'appli sans avertissement de sécurité.
@@ -104,7 +116,7 @@ Le système de fichiers virtuel de Mod Organizer 2 ne fonctionne pas sur Mac. mO
 
 ### Mises à jour
 
-L'appli vérifie une fois par jour si une version plus récente existe sur GitHub et propose d'ouvrir la page Nexus, de rappeler plus tard ou d'ignorer cette version. Rien n'est téléchargé ni installé automatiquement. L'historique complet est dans [CHANGELOG.md](CHANGELOG.md).
+L'appli vérifie une fois par jour si une version plus récente existe sur GitHub, affiche ses notes dans votre langue et propose de l'installer et de se relancer (ou de rappeler plus tard, ou d'ignorer cette version). Le téléchargement est contrôlé (SHA-256, signature Developer ID, notarisation) avant de remplacer l'appli. « Rechercher les mises à jour… » dans le menu fait de même à la demande. L'historique complet est dans [CHANGELOG.md](CHANGELOG.md).
 
 ### Captures d'écran
 
