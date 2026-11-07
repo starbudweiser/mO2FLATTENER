@@ -14,6 +14,7 @@ Notes de version / release notes (EN + FR). Translations in IT and ES: see the N
 - When the game is already adapted, the announcement now says so and lists what is already in place (DXMT engine active, DLSS bridge present, SSE Display Tweaks settings suited to DXMT, no duplicated DLL) instead of only showing what is missing. Only points the engine actually checked as fine are listed.
 - Bottled Shaders 1.0.26 or later is looked for in your MO2 downloads; otherwise the report links to its Nexus page (never downloaded or bundled by the app).
 - Shared Mac engine (the same one as mORTEX and mABBAJACK), through the `mackit` tool bundled in the app.
+- Rebuilt as a **native Swift app** (no more Python or PyInstaller): same features and same results (checked file by file against the previous version on a real Nolvus instance and on test instances), faster to start, and not flagged by antivirus scanners. Your language setting is carried over.
 
 **Français**
 
@@ -25,6 +26,7 @@ Notes de version / release notes (EN + FR). Translations in IT and ES: see the N
 - Quand le jeu est déjà adapté, l'annonce le dit et liste ce qui est déjà en place (moteur DXMT actif, pont DLSS présent, réglages de SSE Display Tweaks adaptés à DXMT, aucune DLL en double) au lieu de n'afficher que ce qui manque. Seuls les points que le moteur a vraiment contrôlés et trouvés bons sont listés.
 - Bottled Shaders 1.0.26 ou plus récent est cherché dans vos téléchargements MO2 ; à défaut, le bilan renvoie vers sa page Nexus (jamais téléchargé ni embarqué par l'appli).
 - Moteur Mac commun (le même que mORTEX et mABBAJACK), par l'outil `mackit` embarqué dans l'appli.
+- Réécrite en **application Swift native** (plus de Python ni de PyInstaller) : mêmes fonctions et mêmes résultats (vérifiés fichier par fichier contre la version précédente sur une vraie instance Nolvus et sur des instances d'essai), démarrage plus rapide, plus de faux positifs antivirus. Votre réglage de langue est repris.
 
 ## 1.3.0
 

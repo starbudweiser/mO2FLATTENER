@@ -1,47 +1,37 @@
 #!/usr/bin/env python3
-"""Extrait des sources Python (sans les exécuter) les données affichées par la preview :
-traductions, langues, règles de filtrage. Sortie JSON sur stdout."""
-import ast
+"""Donnees affichees par la preview : traductions (i18n/strings.json + i18n/ids.json, communes avec l'appli Swift),
+langues et regles de filtrage (lues dans macos/Sources/FlattenCore/Flatten.swift, sans rien compiler). Sortie JSON sur stdout.
+Usage : extract.py <racine du projet>"""
 import json
+import re
 import sys
 from pathlib import Path
 
-SRC = Path(sys.argv[1])
+ROOT = Path(sys.argv[1])
+LANGS = ["fr", "en", "it", "es"]
+
+table = json.loads((ROOT / "i18n" / "strings.json").read_text(encoding="utf-8"))
+ids = json.loads((ROOT / "i18n" / "ids.json").read_text(encoding="utf-8"))
+translations = {
+    lang: {i: (fr if lang == "fr" else table[fr][LANGS.index(lang) - 1]) for i, fr in ids.items()} for lang in LANGS
+}
+
+rules_src = (ROOT / "macos" / "Sources" / "FlattenCore" / "Flatten.swift").read_text(encoding="utf-8")
 
 
-def module(name: str) -> ast.Module:
-    return ast.parse((SRC / name).read_text(encoding="utf-8"))
+def swift_set(name: str) -> list:
+    body = re.search(r"static let " + name + r"[^=]*= \[(.*?)\]\n", rules_src, re.S).group(1)
+    return sorted(re.findall(r'"((?:[^"\\]|\\.)*)"', body))
 
-
-def top_level(tree: ast.Module) -> dict:
-    """Constantes de niveau module (dict, list, set de littéraux)."""
-    out = {}
-    for node in tree.body:
-        target = None
-        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
-            target, value = node.targets[0].id, node.value
-        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.value:
-            target, value = node.target.id, node.value
-        if target and target.isupper():
-            try:
-                v = ast.literal_eval(value)
-            except ValueError:
-                continue
-            out[target] = sorted(v) if isinstance(v, set) else v
-    return out
-
-
-flattener = module("mo2_flattener_gui.py")
-f = top_level(flattener)
 
 print(json.dumps({
     "flattener": {
-        "translations": f["TRANSLATIONS"],
-        "languages": f["AVAILABLE_LANGUAGES"],
-        "ignoredFiles": f["IGNORED_FILES"],
-        "ignoredDirs": f["IGNORED_DIRS"],
-        "ignoredExtensions": f["IGNORED_EXTENSIONS"],
-        "ignoredRootFileExtensions": f["IGNORED_ROOT_FILE_EXTENSIONS"],
-        "ignoredDataRootDirs": f["IGNORED_DATA_ROOT_DIRS"],
+        "translations": translations,
+        "languages": [["fr", "Français", "🇫🇷"], ["en", "English", "🇬🇧"], ["it", "Italiano", "🇮🇹"], ["es", "Español", "🇪🇸"]],
+        "ignoredFiles": swift_set("ignoredFiles"),
+        "ignoredDirs": swift_set("ignoredDirs"),
+        "ignoredExtensions": swift_set("ignoredExtensions"),
+        "ignoredRootFileExtensions": swift_set("ignoredRootFileExtensions"),
+        "ignoredDataRootDirs": swift_set("ignoredDataRootDirs"),
     },
 }, ensure_ascii=False))

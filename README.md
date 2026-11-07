@@ -26,6 +26,7 @@ Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads 
 - **Mac adaptation** (DXMT, ENB, DLSS) at the end of the assembly: each fix is announced beforehand, shown in a « Mac report » card afterwards and can be undone one by one or all at once. Bottled Shaders is never downloaded or bundled: the report points to an archive already in your MO2 or mABBAJACK downloads, or to its Nexus page.
 - Excludes .pdb, .mohidden and junk files; stop button and stop-on-error option.
 - Interface in **English, French, Italian and Spanish** (follows your Mac's language; can be changed in the app).
+- Rebuilt as a **native Swift app** (no more Python or PyInstaller): same features and same results (checked file by file against the previous version on a real Nolvus instance and on test instances), faster to start, and not flagged by antivirus scanners. Your language setting is carried over.
 
 ### What's new in 1.4.0
 
@@ -51,7 +52,7 @@ The app checks once a day whether a newer release exists on GitHub, shows its no
 
 ### Requirements
 
-A Mac with **Apple Silicon** (M1 or later), **macOS 13 Ventura** or later. No Python, no Wine, no virtual machine needed.
+A Mac with **Apple Silicon** (M1 or later), **macOS 15 Sequoia** or later. No Python, no Wine, no virtual machine needed.
 
 ### Installation
 
@@ -72,7 +73,7 @@ Only if the MO2 instance and the target folder are on the same disk. Otherwise u
 
 ### Building from source
 
-Requires Python 3.12 with PyQt6 and PyInstaller. From the repository folder:
+Requires macOS 15 and the Swift 6 toolchain (Xcode or Command Line Tools). The `mackit` tool of the shared Mac engine is embedded if found (`MACKIT_BIN=<path>` otherwise). From the repository folder:
 
 ```bash
 ./build_app.sh
@@ -100,6 +101,7 @@ Le système de fichiers virtuel de Mod Organizer 2 ne fonctionne pas sur Mac. mO
 - **Adaptation au Mac** (DXMT, ENB, DLSS) à la fin de l'assemblage : chaque correctif est annoncé avant, détaillé ensuite dans une carte « Bilan Mac » et annulable un par un ou tout d'un coup. Bottled Shaders n'est jamais téléchargé ni embarqué : le bilan indique l'archive déjà présente dans les téléchargements de MO2 ou de mABBAJACK, ou renvoie à sa page Nexus.
 - Exclut les .pdb, .mohidden et fichiers parasites ; bouton d'arrêt et option d'arrêt sur erreur.
 - Interface en **français, anglais, italien et espagnol** (suit la langue du Mac ; modifiable dans l'appli).
+- Réécrite en **application Swift native** (plus de Python ni de PyInstaller) : mêmes fonctions et mêmes résultats (vérifiés fichier par fichier contre la version précédente sur une vraie instance Nolvus et sur des instances d'essai), démarrage plus rapide, plus de faux positifs antivirus. Votre réglage de langue est repris.
 
 ### Nouveautés de la 1.4.0
 
@@ -125,7 +127,7 @@ L'appli vérifie une fois par jour si une version plus récente existe sur GitHu
 
 ### Configuration requise
 
-Un Mac **Apple Silicon** (M1 ou plus récent), **macOS 13 Ventura** ou plus récent. Ni Python, ni Wine, ni machine virtuelle.
+Un Mac **Apple Silicon** (M1 ou plus récent), **macOS 15 Sequoia** ou plus récent. Ni Python, ni Wine, ni machine virtuelle.
 
 ### Installation
 
@@ -146,7 +148,7 @@ Seulement si l'instance MO2 et le dossier cible sont sur le même disque. Sinon,
 
 ### Compiler depuis les sources
 
-Nécessite Python 3.12 avec PyQt6 et PyInstaller. Depuis le dossier du dépôt :
+Nécessite macOS 15 et la chaîne d'outils Swift 6 (Xcode ou Command Line Tools). L'outil `mackit` du moteur Mac commun est embarqué s'il est trouvé (`MACKIT_BIN=<chemin>` sinon). Depuis le dossier du dépôt :
 
 ```bash
 ./build_app.sh
