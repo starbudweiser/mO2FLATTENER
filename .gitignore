@@ -2,14 +2,6 @@
 .DS_Store
 Icon?
 
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-*.egg-info/
-.pyinstaller_cache/
-
 # Node / Vite
 node_modules/
 .vite/
@@ -27,3 +19,4 @@ logs/
 .env.*
 !.env.example
 ETAT.md
+macos/.build/
