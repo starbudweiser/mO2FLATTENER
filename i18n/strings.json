@@ -1,0 +1,922 @@
+{
+ "mO2FLATTENER · Assembleur d'Instance Mod Organizer 2": [
+  "mO2FLATTENER · Mod Organizer 2 Instance Flattener",
+  "mO2FLATTENER · Assemblatore di Istanze Mod Organizer 2",
+  "mO2FLATTENER · Ensamblador de Instancias Mod Organizer 2"
+ ],
+ "Skyrim SE/AE • En attente de configuration": [
+  "Skyrim SE/AE • Waiting for configuration",
+  "Skyrim SE/AE • In attesa di configurazione",
+  "Skyrim SE/AE • Esperando configuración"
+ ],
+ "Skyrim SE/AE • Analyse des priorités en RAM...": [
+  "Skyrim SE/AE • Analyzing priorities in RAM...",
+  "Skyrim SE/AE • Analisi priorità in RAM...",
+  "Skyrim SE/AE • Analizando prioridades en RAM..."
+ ],
+ "Skyrim SE/AE • Assemblage accéléré en cours...": [
+  "Skyrim SE/AE • Accelerated assembly in progress...",
+  "Skyrim SE/AE • Assemblaggio accelerato in corso...",
+  "Skyrim SE/AE • Ensamblaje acelerado en curso..."
+ ],
+ "Skyrim SE/AE • Assemblage terminé": [
+  "Skyrim SE/AE • Assembly finished",
+  "Skyrim SE/AE • Assemblaggio completato",
+  "Skyrim SE/AE • Ensamblaje completado"
+ ],
+ "Skyrim SE/AE • Assemblage interrompu": [
+  "Skyrim SE/AE • Assembly aborted",
+  "Skyrim SE/AE • Assemblaggio interrotto",
+  "Skyrim SE/AE • Ensamblaje interrumpido"
+ ],
+ "Skyrim SE/AE • Erreur rencontrée": [
+  "Skyrim SE/AE • Error encountered",
+  "Skyrim SE/AE • Errore riscontrato",
+  "Skyrim SE/AE • Error encontrado"
+ ],
+ "1. INSTANCE SOURCE & RÉPERTOIRE DU JEU (RACINE)": [
+  "1. SOURCE INSTANCE & GAME ROOT DIRECTORY",
+  "1. ISTANZA DI ORIGINE E CARTELLA PRINCIPALE (ROOT)",
+  "1. INSTANCIA DE ORIGEN Y CARPETA RAÍZ DEL JUEGO"
+ ],
+ "Dossier MO2 / MODS :": [
+  "MO2 / MODS Folder:",
+  "Cartella MO2 / MODS:",
+  "Carpeta MO2 / MODS:"
+ ],
+ "Sélectionnez le dossier MODS ou la racine de MO2...": [
+  "Select the MODS directory or MO2 root folder...",
+  "Seleziona la cartella MODS o la radice di MO2...",
+  "Seleccione la carpeta MODS o la raíz de MO2..."
+ ],
+ "Profil MO2 :": [
+  "MO2 Profile:",
+  "Profilo MO2:",
+  "Perfil MO2:"
+ ],
+ "Fichier modlist.txt :": [
+  "modlist.txt File:",
+  "File modlist.txt:",
+  "Archivo modlist.txt:"
+ ],
+ "Racine du jeu cible :": [
+  "Target Game Root:",
+  "Radice del gioco (Root):",
+  "Raíz del juego destino:"
+ ],
+ "Ex : /chemin/vers/Skyrim Special Edition": [
+  "e.g. /path/to/Skyrim Special Edition",
+  "Es: /percorso/di/Skyrim Special Edition",
+  "Ej: /ruta/hacia/Skyrim Special Edition"
+ ],
+ "Parcourir": [
+  "Browse",
+  "Sfoglia",
+  "Examinar"
+ ],
+ "Hors APFS, utiliser des liens physiques (Hardlinks) — Décoché = Copie complète. Sur APFS, copie instantanée sans place en plus.": [
+  "Outside APFS, use hardlinks — Unchecked = Full copy. On APFS, instant copy that uses no extra space.",
+  "Fuori da APFS, usa collegamenti fisici (Hardlinks) — Deselezionato = Copia completa. Su APFS, copia istantanea senza spazio in più.",
+  "Fuera de APFS, usar enlaces físicos (Hardlinks) — Desmarcado = Copia completa. En APFS, copia instantánea sin espacio adicional."
+ ],
+ "Arrêter immédiatement l'assemblage en cas d'erreur de copie": [
+  "Stop assembly immediately on copy error",
+  "Interrompi immediatamente l'assemblaggio in caso di errore",
+  "Detener el ensamblaje de inmediato si ocurre un error"
+ ],
+ "2. DÉPLOIEMENT DES CONFIGURATIONS DU JEU": [
+  "2. GAME CONFIGURATION & PLUGINS DEPLOYMENT",
+  "2. DISTRIBUZIONE CONFIGURAZIONI DEL GIOCO",
+  "2. DESPLIEGUE DE CONFIGURACIONES DEL JUEGO"
+ ],
+ "Copier plugins.txt (AppData) :": [
+  "Copy plugins.txt (AppData):",
+  "Copia plugins.txt (AppData):",
+  "Copiar plugins.txt (AppData):"
+ ],
+ "Copier INIs (Documents) :": [
+  "Copy INIs (Documents):",
+  "Copia file INI (Documenti):",
+  "Copiar archivos INI (Documentos):"
+ ],
+ "📦  LANCER L'ASSEMBLAGE COMPLET": [
+  "📦  START COMPLETE ASSEMBLY",
+  "📦  AVVIA ASSEMBLAGGIO COMPLETO",
+  "📦  INICIAR ENSAMBLAJE COMPLETO"
+ ],
+ "🛑  INTERROMPRE L'ASSEMBLAGE": [
+  "🛑  ABORT ASSEMBLY",
+  "🛑  INTERROMPI ASSEMBLAGGIO",
+  "🛑  INTERRUMPIR ENSAMBLAJE"
+ ],
+ "JOURNAL DES OPÉRATIONS": [
+  "OPERATIONS LOG",
+  "REGISTRO OPERAZIONI",
+  "REGISTRO DE OPERACIONES"
+ ],
+ "[AVERTISSEMENT] Aucun dossier 'profiles' détecté dans": [
+  "[WARNING] No 'profiles' folder found in",
+  "[AVVISO] Nessuna cartella 'profiles' trovata in",
+  "[ADVERTENCIA] No se encontró la carpeta 'profiles' en"
+ ],
+ "Erreur": [
+  "Error",
+  "Errore",
+  "Error"
+ ],
+ "Le dossier MO2 ou MODS spécifié est introuvable.": [
+  "The specified MO2 or MODS directory was not found.",
+  "La cartella MO2 o MODS specificata non è stata trovata.",
+  "La carpeta MO2 o MODS especificada no se encuentra."
+ ],
+ "Le fichier modlist.txt spécifié est introuvable.": [
+  "The specified modlist.txt file was not found.",
+  "Il file modlist.txt specificato non è stato trovato.",
+  "El archivo modlist.txt especificado no se encuentra."
+ ],
+ "Veuillez définir le dossier racine de destination du jeu.": [
+  "Please specify a target game root directory.",
+  "Definisci la cartella radice di destinazione del gioco.",
+  "Por favor defina la carpeta raíz de destino del juego."
+ ],
+ "Veuillez définir le dossier de destination pour plugins.txt.": [
+  "Please choose a destination folder for plugins.txt.",
+  "Definisci la cartella di destinazione per plugins.txt.",
+  "Por favor defina la carpeta de destino para plugins.txt."
+ ],
+ "Veuillez définir le dossier de destination pour les fichiers INI.": [
+  "Please choose a destination folder for INI files.",
+  "Definisci la cartella di destinazione per i file INI.",
+  "Por favor defina la carpeta de destino para los archivos INI."
+ ],
+ "Succès": [
+  "Success",
+  "Successo",
+  "Éxito"
+ ],
+ "L'assemblage complet du jeu s'est terminé avec succès !": [
+  "Game assembly completed successfully!",
+  "L'assemblaggio completo del gioco è terminato con successo!",
+  "¡El ensamblaje completo del juego finalizó con éxito!"
+ ],
+ "L'assemblage a été interrompu par l'utilisateur.": [
+  "Assembly was stopped by user.",
+  "L'assemblaggio è stato interrotto dall'utente.",
+  "El ensamblaje fue detenido por el usuario."
+ ],
+ "[*] Analyse de l'ordre de priorité : {name}": [
+  "[*] Analyzing priority order: {name}",
+  "[*] Analisi dell'ordine di priorità: {name}",
+  "[*] Analizando orden de prioridad: {name}"
+ ],
+ "[*] Dossier racine : {path}": [
+  "[*] Root folder: {path}",
+  "[*] Cartella radice: {path}",
+  "[*] Carpeta raíz: {path}"
+ ],
+ "[*] Dossier Data   : {path}": [
+  "[*] Data folder: {path}",
+  "[*] Cartella Data: {path}",
+  "[*] Carpeta Data: {path}"
+ ],
+ "[*] Filtres actifs : exclusion des .pdb, .mohidden et dossiers inertes": [
+  "[*] Active filters: excluding .pdb, .mohidden, and junk folders",
+  "[*] Filtri attivi: esclusione file .pdb, .mohidden e cartelle non necessarie",
+  "[*] Filtros activos: exclusión de .pdb, .mohidden y carpetas innecesarias"
+ ],
+ "[*] Indexation rapide en mémoire des fichiers uniques...": [
+  "[*] Fast RAM indexation of unique files in progress...",
+  "[*] Indicizzazione rapida in RAM dei file unici in corso...",
+  "[*] Indexación rápida en RAM de archivos únicos en curso..."
+ ],
+ "    Indexation de STOCK GAME : {name}": [
+  "    Indexing STOCK GAME: {name}",
+  "    Indicizzazione di STOCK GAME: {name}",
+  "    Indexando STOCK GAME: {name}"
+ ],
+ "[*] Indexation terminée : {total} fichiers finaux uniques à déployer.": [
+  "[*] Indexing complete: {total} unique final files to deploy.",
+  "[*] Indicizzazione completata: {total} file unici da distribuire.",
+  "[*] Indexación finalizada: {total} archivos únicos para desplegar."
+ ],
+ "[*] Démarrage de la copie optimisée multi-thread...": [
+  "[*] Starting optimized multi-threaded copy...",
+  "[*] Avvio della copia ottimizzata multi-thread...",
+  "[*] Iniciando copia optimizada multi-hilo..."
+ ],
+ "    [{current}/{total}] fichiers déployés...": [
+  "    [{current}/{total}] files deployed...",
+  "    [{current}/{total}] file distribuiti...",
+  "    [{current}/{total}] archivos desplegados..."
+ ],
+ "[ERREUR] Échec copie {src} -> {dst} : {err}": [
+  "[ERROR] Failed copying {src} -> {dst}: {err}",
+  "[ERRORE] Copia fallita {src} -> {dst}: {err}",
+  "[ERROR] Fallo al copiar {src} -> {dst}: {err}"
+ ],
+ "Arrêt déclenché par une erreur : {err}": [
+  "Aborted due to error: {err}",
+  "Interruzione causata da un errore: {err}",
+  "Detenido debido a un error: {err}"
+ ],
+ "[+] plugins.txt déployé dans : {path}": [
+  "[+] plugins.txt deployed to: {path}",
+  "[+] plugins.txt distribuito in: {path}",
+  "[+] plugins.txt desplegado en: {path}"
+ ],
+ "[+] Configuration {name} copiée.": [
+  "[+] Configuration {name} copied.",
+  "[+] Configurazione {name} copiata.",
+  "[+] Configuración {name} copiada."
+ ],
+ "\n[SUCCÈS] Assemblage terminé ({count} fichiers uniques traités).": [
+  "\n[SUCCESS] Assembly finished ({count} unique files processed).",
+  "\n[SUCCESSO] Assemblaggio completato ({count} file unici elaborati).",
+  "\n[ÉXITO] Ensamblaje completado ({count} archivos únicos procesados)."
+ ],
+ "\n[INTERRUPTION] Demande d'arrêt envoyée au moteur...": [
+  "\n[ABORT] Stop signal sent to worker engine...",
+  "\n[INTERRUZIONE] Segnale di arresto inviato al motore...",
+  "\n[INTERRUPCIÓN] Señal de parada enviada al motor..."
+ ],
+ "Skyrim SE/AE • Adaptation au Mac en cours...": [
+  "Skyrim SE/AE • Mac adaptation in progress...",
+  "Skyrim SE/AE • Adattamento al Mac in corso...",
+  "Skyrim SE/AE • Adaptación al Mac en curso..."
+ ],
+ "3. ADAPTATION AU MAC (DXMT, ENB, DLSS)": [
+  "3. MAC ADAPTATION (DXMT, ENB, DLSS)",
+  "3. ADATTAMENTO AL MAC (DXMT, ENB, DLSS)",
+  "3. ADAPTACIÓN AL MAC (DXMT, ENB, DLSS)"
+ ],
+ "Comment utiliserez-vous le jeu assemblé ?": [
+  "How will you use the assembled game?",
+  "Come userai il gioco assemblato?",
+  "¿Cómo va a usar el juego ensamblado?"
+ ],
+ "Dans le dossier": [
+  "In the folder",
+  "Nella cartella",
+  "En la carpeta"
+ ],
+ "Dans la bouteille": [
+  "In the bottle",
+  "Nella bottiglia",
+  "En la botella"
+ ],
+ "Ensuite": [
+  "Afterwards",
+  "Poi",
+  "Después"
+ ],
+ "Annulation": [
+  "Undo",
+  "Annullamento",
+  "Deshacer"
+ ],
+ "Dossier universel (Stock)": [
+  "Universal folder (Stock)",
+  "Cartella universale (Stock)",
+  "Carpeta universal (Stock)"
+ ],
+ "Le dossier est livré tel que l’assemblage le produit : rien n’est ajouté ni modifié.": [
+  "The folder is delivered exactly as the assembly produces it: nothing is added or changed.",
+  "La cartella viene consegnata così come la produce l’assemblaggio: non viene aggiunto né modificato nulla.",
+  "La carpeta se entrega tal como la produce el ensamblaje: no se añade ni se modifica nada."
+ ],
+ "Rien n’est modifié : ni pont DLSS, ni réglages, ni fichier écarté.": [
+  "Nothing is changed: no DLSS bridge, no settings, no file set aside.",
+  "Non viene modificato nulla: né ponte DLSS, né impostazioni, né file messi da parte.",
+  "No se modifica nada: ni puente DLSS, ni ajustes, ni archivos apartados."
+ ],
+ "Rien n’est modifié.": [
+  "Nothing is changed.",
+  "Non viene modificato nulla.",
+  "No se modifica nada."
+ ],
+ "Copiez le dossier où vous voulez : Windows, CrossOver, Wine… Rien de propre au Mac n’est ajouté (pas de pont DLSS).": [
+  "Copy the folder wherever you like: Windows, CrossOver, Wine… Nothing Mac-specific is added (no DLSS bridge).",
+  "Copia la cartella dove vuoi: Windows, CrossOver, Wine… Non viene aggiunto nulla di specifico per Mac (nessun ponte DLSS).",
+  "Copie la carpeta donde quiera: Windows, CrossOver, Wine… No se añade nada propio del Mac (sin puente DLSS)."
+ ],
+ "Rien à annuler.": [
+  "Nothing to undo.",
+  "Niente da annullare.",
+  "Nada que deshacer."
+ ],
+ "Pour une bouteille CrossOver (kit DXMT mORTEX)": [
+  "For a CrossOver bottle (mORTEX DXMT kit)",
+  "Per una bottiglia CrossOver (kit DXMT di mORTEX)",
+  "Para una botella de CrossOver (kit DXMT de mORTEX)"
+ ],
+ "Prépare le jeu pour CrossOver sur Mac avec le kit DXMT de mORTEX : moteur graphique DXMT, pont DLSS, réglages d’affichage et DLL de la bouteille.": [
+  "Gets the game ready for CrossOver on Mac with the mORTEX DXMT kit: DXMT graphics engine, DLSS bridge, display settings and bottle DLLs.",
+  "Prepara il gioco per CrossOver su Mac con il kit DXMT di mORTEX: motore grafico DXMT, ponte DLSS, impostazioni dello schermo e DLL della bottiglia.",
+  "Deja el juego listo para CrossOver en Mac con el kit DXMT de mORTEX: motor gráfico DXMT, puente DLSS, ajustes de pantalla y DLL de la botella."
+ ],
+ "Pont DLSS (d3d11.dll), réglages de SSE Display Tweaks, DLL en double écartées (gardées dans _MAC_BACKUP).": [
+  "DLSS bridge (d3d11.dll), SSE Display Tweaks settings, duplicate DLLs set aside (kept in _MAC_BACKUP).",
+  "Ponte DLSS (d3d11.dll), impostazioni di SSE Display Tweaks, DLL doppie messe da parte (conservate in _MAC_BACKUP).",
+  "Puente DLSS (d3d11.dll), ajustes de SSE Display Tweaks, DLL duplicadas apartadas (guardadas en _MAC_BACKUP)."
+ ],
+ "La bouteille est modifiée : moteur DXMT, DLL forcées, compilateur de shaders de Microsoft.": [
+  "The bottle is changed: DXMT engine, forced DLLs, Microsoft shader compiler.",
+  "La bottiglia viene modificata: motore DXMT, DLL forzate, compilatore di shader di Microsoft.",
+  "Se modifica la botella: motor DXMT, DLL forzadas, compilador de shaders de Microsoft."
+ ],
+ "Le dossier fonctionne avec cette bouteille. Le copier vers Windows ou une autre bouteille le casserait, sauf après « Tout annuler ».": [
+  "The folder works with this bottle. Copying it to Windows or another bottle would break it, unless you use “Undo all” first.",
+  "La cartella funziona con questa bottiglia. Copiarla su Windows o in un’altra bottiglia la romperebbe, a meno di usare prima «Annulla tutto».",
+  "La carpeta funciona con esta botella. Copiarla a Windows o a otra botella la rompería, salvo tras «Deshacer todo»."
+ ],
+ "Tout s’annule depuis le bilan, correctif par correctif ou d’un coup.": [
+  "Everything can be undone from the report, fix by fix or all at once.",
+  "Tutto si annulla dal resoconto, correzione per correzione o in un colpo solo.",
+  "Todo se deshace desde el balance, corrección por corrección o de golpe."
+ ],
+ "Indisponible : aucune bouteille CrossOver n’a été trouvée. Créez-en une avec l’assistant bouteille de mORTEX, puis revenez ici.": [
+  "Unavailable: no CrossOver bottle was found. Create one with the mORTEX bottle assistant, then come back here.",
+  "Non disponibile: non è stata trovata nessuna bottiglia CrossOver. Creane una con l’assistente bottiglie di mORTEX, poi torna qui.",
+  "No disponible: no se encontró ninguna botella de CrossOver. Cree una con el asistente de botellas de mORTEX y vuelva aquí."
+ ],
+ "Bouteille CrossOver :": [
+  "CrossOver bottle:",
+  "Bottiglia CrossOver:",
+  "Botella de CrossOver:"
+ ],
+ "Détectée : elle contient la racine du jeu.": [
+  "Detected: it contains the game root.",
+  "Rilevata: contiene la radice del gioco.",
+  "Detectada: contiene la raíz del juego."
+ ],
+ "Première bouteille CrossOver trouvée ; modifiable.": [
+  "First CrossOver bottle found; you can change it.",
+  "Prima bottiglia CrossOver trovata; modificabile.",
+  "Primera botella de CrossOver encontrada; se puede cambiar."
+ ],
+ "Choisie par vos soins.": [
+  "Chosen by you.",
+  "Scelta da te.",
+  "Elegida por usted."
+ ],
+ "Analyse du jeu…": [
+  "Checking the game…",
+  "Analisi del gioco…",
+  "Analizando el juego…"
+ ],
+ "L’outil d’adaptation au Mac (mackit) est introuvable : l’assemblage se fera sans adaptation.": [
+  "The Mac adaptation tool (mackit) was not found: the assembly will run without adaptation.",
+  "Lo strumento di adattamento al Mac (mackit) non è stato trovato: l’assemblaggio avverrà senza adattamento.",
+  "No se encuentra la herramienta de adaptación al Mac (mackit): el ensamblaje se hará sin adaptación."
+ ],
+ "Indiquez la racine du jeu cible (section 1) pour voir ce qui sera adapté.": [
+  "Enter the target game root (section 1) to see what will be adapted.",
+  "Indica la radice del gioco di destinazione (sezione 1) per vedere cosa sarà adattato.",
+  "Indique la raíz del juego destino (sección 1) para ver qué se adaptará."
+ ],
+ "Le jeu cible n’existe pas encore. Seuls les correctifs de la bouteille sont annoncés ; ceux qui dépendent des fichiers du jeu (pont DLSS, SSE Display Tweaks, doublons) seront examinés à la fin de l’assemblage et détaillés dans le bilan, où vous pourrez les annuler.": [
+  "The target game does not exist yet. Only the bottle fixes are announced; those that depend on the game’s files (DLSS bridge, SSE Display Tweaks, duplicates) will be examined at the end of the assembly and detailed in the report, where you can undo them.",
+  "Il gioco di destinazione non esiste ancora. Sono annunciate solo le correzioni della bottiglia; quelle che dipendono dai file del gioco (ponte DLSS, SSE Display Tweaks, duplicati) saranno esaminate alla fine dell’assemblaggio e dettagliate nel resoconto, dove potrai annullarle.",
+  "El juego destino todavía no existe. Solo se anuncian las correcciones de la botella; las que dependen de los archivos del juego (puente DLSS, SSE Display Tweaks, duplicados) se examinarán al final del ensamblaje y se detallarán en el balance, donde podrá deshacerlas."
+ ],
+ "Une adaptation précédente est présente dans ce dossier ({n} correctif(s)) : elle sera annulée avant le nouvel assemblage, puis le jeu sera adapté de nouveau.": [
+  "A previous adaptation is present in this folder ({n} fix(es)): it will be undone before the new assembly, then the game will be adapted again.",
+  "In questa cartella c’è un adattamento precedente ({n} correzione/i): sarà annullato prima del nuovo assemblaggio, poi il gioco sarà adattato di nuovo.",
+  "Hay una adaptación anterior en esta carpeta ({n} corrección(es)): se deshará antes del nuevo ensamblaje y el juego se adaptará de nuevo."
+ ],
+ "L’analyse du jeu a échoué : {reason} L’adaptation sera retentée à la fin de l’assemblage.": [
+  "Checking the game failed: {reason} The adaptation will be retried at the end of the assembly.",
+  "L’analisi del gioco non è riuscita: {reason} L’adattamento sarà ritentato alla fine dell’assemblaggio.",
+  "El análisis del juego ha fallado: {reason} La adaptación se reintentará al final del ensamblaje."
+ ],
+ "Déjà adapté : le jeu et sa bouteille n’ont besoin d’aucun correctif.": [
+  "Already adapted: the game and its bottle need no fix.",
+  "Già adattato: il gioco e la sua bottiglia non hanno bisogno di alcuna correzione.",
+  "Ya adaptado: el juego y su botella no necesitan ninguna corrección."
+ ],
+ "Déjà en ordre": [
+  "Already in place",
+  "Già a posto",
+  "Ya en orden"
+ ],
+ "Moteur graphique DXMT déjà actif dans la bouteille": [
+  "DXMT graphics engine already active in the bottle",
+  "Motore grafico DXMT già attivo nella bottiglia",
+  "Motor gráfico DXMT ya activo en la botella"
+ ],
+ "Pont mDLSS déjà posé dans le dossier du jeu": [
+  "mDLSS bridge already in the game folder",
+  "Ponte mDLSS già presente nella cartella del gioco",
+  "Puente mDLSS ya colocado en la carpeta del juego"
+ ],
+ "Réglages de SSE Display Tweaks déjà adaptés à DXMT": [
+  "SSE Display Tweaks settings already suited to DXMT",
+  "Impostazioni di SSE Display Tweaks già adatte a DXMT",
+  "Ajustes de SSE Display Tweaks ya adaptados a DXMT"
+ ],
+ "Aucune DLL en double avec Bottled Shaders": [
+  "No DLL duplicating Bottled Shaders",
+  "Nessuna DLL duplica Bottled Shaders",
+  "Ninguna DLL duplica Bottled Shaders"
+ ],
+ "Sera appliqué": [
+  "Will be applied",
+  "Sarà applicato",
+  "Se aplicará"
+ ],
+ "Ne sera pas fait": [
+  "Will not be done",
+  "Non sarà fatto",
+  "No se hará"
+ ],
+ "Fichiers écartés (gardés dans la sauvegarde)": [
+  "Files set aside (kept in the backup)",
+  "File messi da parte (conservati nel backup)",
+  "Archivos apartados (guardados en la copia de seguridad)"
+ ],
+ "Fichiers touchés": [
+  "Files touched",
+  "File interessati",
+  "Archivos afectados"
+ ],
+ "Lignes modifiées": [
+  "Lines changed",
+  "Righe modificate",
+  "Líneas modificadas"
+ ],
+ "Les fichiers d’origine sont copiés dans le dossier _MAC_BACKUP du jeu : tout s’annule après l’assemblage.": [
+  "The original files are copied into the game’s _MAC_BACKUP folder: everything can be undone after the assembly.",
+  "I file originali vengono copiati nella cartella _MAC_BACKUP del gioco: tutto si può annullare dopo l’assemblaggio.",
+  "Los archivos originales se copian en la carpeta _MAC_BACKUP del juego: todo se puede deshacer tras el ensamblaje."
+ ],
+ "Bottled Shaders": [
+  "Bottled Shaders",
+  "Bottled Shaders",
+  "Bottled Shaders"
+ ],
+ "Archive trouvée : {name} ({folder})": [
+  "Archive found: {name} ({folder})",
+  "Archivio trovato: {name} ({folder})",
+  "Archivo encontrado: {name} ({folder})"
+ ],
+ "Afficher dans le Finder": [
+  "Show in Finder",
+  "Mostra nel Finder",
+  "Mostrar en el Finder"
+ ],
+ "À télécharger : Bottled Shaders {minimum} ou plus récent. Aucune archive n’a été trouvée dans les téléchargements de l’instance MO2 ni dans ceux de mABBAJACK.": [
+  "To download: Bottled Shaders {minimum} or newer. No archive was found in the MO2 instance’s downloads or in mABBAJACK’s.",
+  "Da scaricare: Bottled Shaders {minimum} o più recente. Nessun archivio trovato nei download dell’istanza MO2 né in quelli di mABBAJACK.",
+  "Por descargar: Bottled Shaders {minimum} o posterior. No se encontró ningún archivo en las descargas de la instancia MO2 ni en las de mABBAJACK."
+ ],
+ "Ouvrir la page Nexus": [
+  "Open the Nexus page",
+  "Apri la pagina Nexus",
+  "Abrir la página de Nexus"
+ ],
+ "mO2FLATTENER ne télécharge ni n’embarque Bottled Shaders : récupérez le fichier principal, puis installez-le dans votre instance MO2 comme un mod.": [
+  "mO2FLATTENER neither downloads nor bundles Bottled Shaders: get the main file, then install it in your MO2 instance like any mod.",
+  "mO2FLATTENER non scarica né include Bottled Shaders: ottieni il file principale e installalo poi nella tua istanza MO2 come una mod qualsiasi.",
+  "mO2FLATTENER no descarga ni incluye Bottled Shaders: obtenga el archivo principal e instálelo después en su instancia MO2 como cualquier mod."
+ ],
+ "mO2FLATTENER ne l’installe pas : installez-la dans votre instance MO2 comme un mod, puis relancez l’assemblage.": [
+  "mO2FLATTENER does not install it: install it in your MO2 instance like any mod, then run the assembly again.",
+  "mO2FLATTENER non la installa: installala nella tua istanza MO2 come una mod qualsiasi, poi rilancia l’assemblaggio.",
+  "mO2FLATTENER no la instala: instálela en su instancia MO2 como cualquier mod y vuelva a lanzar el ensamblaje."
+ ],
+ "BILAN MAC": [
+  "MAC REPORT",
+  "RESOCONTO MAC",
+  "BALANCE MAC"
+ ],
+ "DOSSIER UNIVERSEL": [
+  "UNIVERSAL FOLDER",
+  "CARTELLA UNIVERSALE",
+  "CARPETA UNIVERSAL"
+ ],
+ "Aucune adaptation : le dossier est tel que l’assemblage l’a produit, rien n’a été modifié. Copiez-le où vous voulez.": [
+  "No adaptation: the folder is exactly as the assembly produced it, nothing was changed. Copy it wherever you like.",
+  "Nessun adattamento: la cartella è così come l’ha prodotta l’assemblaggio, nulla è stato modificato. Copiala dove vuoi.",
+  "Sin adaptación: la carpeta está tal como la produjo el ensamblaje, no se ha modificado nada. Cópiela donde quiera."
+ ],
+ "Aucune bouteille CrossOver trouvée : rien n’a été modifié. Le dossier reste universel.": [
+  "No CrossOver bottle found: nothing was changed. The folder stays universal.",
+  "Nessuna bottiglia CrossOver trovata: nulla è stato modificato. La cartella resta universale.",
+  "No se encontró ninguna botella de CrossOver: no se ha modificado nada. La carpeta sigue siendo universal."
+ ],
+ "Assemblage terminé. Voici ce que l’adaptation au Mac a fait.": [
+  "Assembly complete. Here is what the Mac adaptation did.",
+  "Assemblaggio completato. Ecco cosa ha fatto l’adattamento al Mac.",
+  "Ensamblaje terminado. Esto es lo que ha hecho la adaptación al Mac."
+ ],
+ "Appliqué": [
+  "Applied",
+  "Applicata",
+  "Aplicada"
+ ],
+ "Échoué": [
+  "Failed",
+  "Non riuscita",
+  "Fallida"
+ ],
+ "Ignoré": [
+  "Skipped",
+  "Ignorata",
+  "Omitida"
+ ],
+ "Annuler": [
+  "Undo",
+  "Annulla",
+  "Deshacer"
+ ],
+ "Tout annuler": [
+  "Undo all",
+  "Annulla tutto",
+  "Deshacer todo"
+ ],
+ "Annulation…": [
+  "Undoing…",
+  "Annullamento…",
+  "Deshaciendo…"
+ ],
+ "{n} correctif(s) annulé(s).": [
+  "{n} fix(es) undone.",
+  "{n} correzione/i annullata/e.",
+  "{n} corrección(es) deshecha(s)."
+ ],
+ "Annulation refusée": [
+  "Undo refused",
+  "Annullamento rifiutato",
+  "Deshacer rechazado"
+ ],
+ "Tout est annulé : le jeu est revenu à son état d’avant l’adaptation.": [
+  "Everything is undone: the game is back to its state before the adaptation.",
+  "Tutto è annullato: il gioco è tornato allo stato precedente all’adattamento.",
+  "Todo está deshecho: el juego ha vuelto a su estado anterior a la adaptación."
+ ],
+ "Rien n’était à adapter : le jeu et sa bouteille étaient déjà prêts.": [
+  "There was nothing to adapt: the game and its bottle were already ready.",
+  "Non c’era nulla da adattare: il gioco e la sua bottiglia erano già pronti.",
+  "No había nada que adaptar: el juego y su botella ya estaban listos."
+ ],
+ "L’adaptation au Mac a échoué. Rien n’est à craindre pour l’assemblage, qui est terminé.": [
+  "The Mac adaptation failed. The assembly itself is complete and unaffected.",
+  "L’adattamento al Mac non è riuscito. L’assemblaggio è completato e non ne risente.",
+  "La adaptación al Mac ha fallado. El ensamblaje está terminado y no se ve afectado."
+ ],
+ "Gardez le dossier _MAC_BACKUP à la racine du jeu : il contient les fichiers d’origine nécessaires pour annuler.": [
+  "Keep the _MAC_BACKUP folder at the root of the game: it holds the original files needed to undo.",
+  "Conserva la cartella _MAC_BACKUP nella radice del gioco: contiene i file originali necessari per annullare.",
+  "Conserve la carpeta _MAC_BACKUP en la raíz del juego: contiene los archivos originales necesarios para deshacer."
+ ],
+ "[*] Adaptation au Mac : analyse du jeu...": [
+  "[*] Mac adaptation: checking the game...",
+  "[*] Adattamento al Mac: analisi del gioco...",
+  "[*] Adaptación al Mac: analizando el juego..."
+ ],
+ "    [Mac] À appliquer : {title}": [
+  "    [Mac] To apply: {title}",
+  "    [Mac] Da applicare: {title}",
+  "    [Mac] Por aplicar: {title}"
+ ],
+ "    [Mac] Ignoré : {title}": [
+  "    [Mac] Skipped: {title}",
+  "    [Mac] Ignorata: {title}",
+  "    [Mac] Omitida: {title}"
+ ],
+ "[+] Mac : {title} — appliqué.": [
+  "[+] Mac: {title} — applied.",
+  "[+] Mac: {title} — applicata.",
+  "[+] Mac: {title} — aplicada."
+ ],
+ "[ERREUR] Mac : {title} — échoué.": [
+  "[ERROR] Mac: {title} — failed.",
+  "[ERRORE] Mac: {title} — non riuscita.",
+  "[ERROR] Mac: {title} — fallida."
+ ],
+ "[*] Adaptation au Mac : rien à adapter.": [
+  "[*] Mac adaptation: nothing to adapt.",
+  "[*] Adattamento al Mac: niente da adattare.",
+  "[*] Adaptación al Mac: nada que adaptar."
+ ],
+ "[*] Dossier universel : aucune adaptation au Mac, rien n’a été modifié.": [
+  "[*] Universal folder: no Mac adaptation, nothing was changed.",
+  "[*] Cartella universale: nessun adattamento al Mac, nulla è stato modificato.",
+  "[*] Carpeta universal: sin adaptación al Mac, no se ha modificado nada."
+ ],
+ "[AVERTISSEMENT] Adaptation au Mac : aucune bouteille CrossOver trouvée, rien n’a été modifié.": [
+  "[WARNING] Mac adaptation: no CrossOver bottle found, nothing was changed.",
+  "[AVVISO] Adattamento al Mac: nessuna bottiglia CrossOver trovata, nulla è stato modificato.",
+  "[ADVERTENCIA] Adaptación al Mac: no se encontró ninguna botella de CrossOver, no se ha modificado nada."
+ ],
+ "[*] Adaptation au Mac terminée : {applied} appliqué(s), {failed} échoué(s), {skipped} ignoré(s).": [
+  "[*] Mac adaptation finished: {applied} applied, {failed} failed, {skipped} skipped.",
+  "[*] Adattamento al Mac completato: {applied} applicata/e, {failed} non riuscita/e, {skipped} ignorata/e.",
+  "[*] Adaptación al Mac terminada: {applied} aplicada(s), {failed} fallida(s), {skipped} omitida(s)."
+ ],
+ "[AVERTISSEMENT] Adaptation au Mac impossible (l’assemblage n’est pas touché) : {reason}": [
+  "[WARNING] Mac adaptation impossible (the assembly is untouched): {reason}",
+  "[AVVISO] Adattamento al Mac impossibile (l’assemblaggio non ne risente): {reason}",
+  "[ADVERTENCIA] Adaptación al Mac imposible (el ensamblaje no se ve afectado): {reason}"
+ ],
+ "[*] Adaptation au Mac précédente annulée avant le nouvel assemblage ({n} correctif(s)).": [
+  "[*] Previous Mac adaptation undone before the new assembly ({n} fix(es)).",
+  "[*] Adattamento al Mac precedente annullato prima del nuovo assemblaggio ({n} correzione/i).",
+  "[*] Adaptación al Mac anterior deshecha antes del nuevo ensamblaje ({n} corrección(es))."
+ ],
+ "[AVERTISSEMENT] Adaptation au Mac précédente : annulation incomplète, un fichier a changé depuis.": [
+  "[WARNING] Previous Mac adaptation: undo incomplete, a file has changed since.",
+  "[AVVISO] Adattamento al Mac precedente: annullamento incompleto, un file è cambiato nel frattempo.",
+  "[ADVERTENCIA] Adaptación al Mac anterior: deshacer incompleto, un archivo ha cambiado desde entonces."
+ ],
+ "[+] Mac : {title} — annulé.": [
+  "[+] Mac: {title} — undone.",
+  "[+] Mac: {title} — annullata.",
+  "[+] Mac: {title} — deshecha."
+ ],
+ "[AVERTISSEMENT] Mac : {title} — annulation refusée (un fichier a changé depuis).": [
+  "[WARNING] Mac: {title} — undo refused (a file has changed since).",
+  "[AVVISO] Mac: {title} — annullamento rifiutato (un file è cambiato nel frattempo).",
+  "[ADVERTENCIA] Mac: {title} — deshacer rechazado (un archivo ha cambiado desde entonces)."
+ ],
+ "Moteur graphique DXMT": [
+  "DXMT graphics engine",
+  "Motore grafico DXMT",
+  "Motor gráfico DXMT"
+ ],
+ "La bouteille CrossOver utilise {engine}. Elle passe sur DXMT, le moteur graphique que demandent Bottled Shaders et DLSS (réglage CX_GRAPHICS_BACKEND de cxbottle.conf).": [
+  "The CrossOver bottle uses {engine}. It switches to DXMT, the graphics engine Bottled Shaders and DLSS need (CX_GRAPHICS_BACKEND in cxbottle.conf).",
+  "La bottiglia CrossOver usa {engine}. Passa a DXMT, il motore grafico richiesto da Bottled Shaders e DLSS (impostazione CX_GRAPHICS_BACKEND di cxbottle.conf).",
+  "La botella de CrossOver usa {engine}. Pasa a DXMT, el motor gráfico que necesitan Bottled Shaders y DLSS (ajuste CX_GRAPHICS_BACKEND de cxbottle.conf)."
+ ],
+ "Pont mDLSS (DLSS)": [
+  "mDLSS bridge (DLSS)",
+  "Ponte mDLSS (DLSS)",
+  "Puente mDLSS (DLSS)"
+ ],
+ "Pose le pont mDLSS (d3d11.dll) à côté de SkyrimSE.exe et règle Bottled Shaders sur DLSS. Sans lui, DLSS affiche un écran noir sous DXMT.": [
+  "Puts the mDLSS bridge (d3d11.dll) next to SkyrimSE.exe and sets Bottled Shaders to DLSS. Without it, DLSS shows a black screen under DXMT.",
+  "Mette il ponte mDLSS (d3d11.dll) accanto a SkyrimSE.exe e imposta Bottled Shaders su DLSS. Senza, DLSS mostra uno schermo nero con DXMT.",
+  "Coloca el puente mDLSS (d3d11.dll) junto a SkyrimSE.exe y configura Bottled Shaders en DLSS. Sin él, DLSS muestra una pantalla negra bajo DXMT."
+ ],
+ "Pose le pont mDLSS (d3d11.dll) à la place de celui d’ENBSeries et règle Bottled Shaders sur DLSS. Le d3d11.dll actuel est gardé dans la sauvegarde.": [
+  "Puts the mDLSS bridge (d3d11.dll) in place of ENBSeries’ and sets Bottled Shaders to DLSS. The current d3d11.dll is kept in the backup.",
+  "Mette il ponte mDLSS (d3d11.dll) al posto di quello di ENBSeries e imposta Bottled Shaders su DLSS. Il d3d11.dll attuale è conservato nel backup.",
+  "Coloca el puente mDLSS (d3d11.dll) en lugar del de ENBSeries y configura Bottled Shaders en DLSS. El d3d11.dll actual se guarda en la copia de seguridad."
+ ],
+ "SSE Display Tweaks pour DXMT": [
+  "SSE Display Tweaks for DXMT",
+  "SSE Display Tweaks per DXMT",
+  "SSE Display Tweaks para DXMT"
+ ],
+ "Règle trois lignes de SSEDisplayTweaks.ini (SwapEffect, SwapBufferCount, VideoMemorySizeMb) pour que l’affichage fonctionne sous DXMT.": [
+  "Sets three lines of SSEDisplayTweaks.ini (SwapEffect, SwapBufferCount, VideoMemorySizeMb) so the display works under DXMT.",
+  "Imposta tre righe di SSEDisplayTweaks.ini (SwapEffect, SwapBufferCount, VideoMemorySizeMb) perché la visualizzazione funzioni con DXMT.",
+  "Ajusta tres líneas de SSEDisplayTweaks.ini (SwapEffect, SwapBufferCount, VideoMemorySizeMb) para que la pantalla funcione bajo DXMT."
+ ],
+ "DLL en double avec Bottled Shaders": [
+  "DLLs duplicated by Bottled Shaders",
+  "DLL duplicate con Bottled Shaders",
+  "DLL duplicadas con Bottled Shaders"
+ ],
+ "Écarte {dlls} : Bottled Shaders les intègre déjà, et deux copies font planter le jeu. Les fichiers sont gardés dans la sauvegarde.": [
+  "Sets aside {dlls}: Bottled Shaders already includes them, and two copies crash the game. The files are kept in the backup.",
+  "Mette da parte {dlls}: Bottled Shaders le include già e due copie bloccano il gioco. I file sono conservati nel backup.",
+  "Aparta {dlls}: Bottled Shaders ya las incluye y dos copias bloquean el juego. Los archivos se guardan en la copia de seguridad."
+ ],
+ "Compilateur de shaders de Microsoft": [
+  "Microsoft shader compiler",
+  "Compilatore di shader di Microsoft",
+  "Compilador de shaders de Microsoft"
+ ],
+ "Remplace le compilateur de shaders de Wine, qui ne compile pas Community Shaders, par celui de Microsoft (d3dcompiler_47.dll, fourni avec .NET 8).": [
+  "Replaces Wine’s shader compiler, which cannot compile Community Shaders, with Microsoft’s (d3dcompiler_47.dll, provided with .NET 8).",
+  "Sostituisce il compilatore di shader di Wine, che non compila Community Shaders, con quello di Microsoft (d3dcompiler_47.dll, fornito con .NET 8).",
+  "Sustituye el compilador de shaders de Wine, que no compila Community Shaders, por el de Microsoft (d3dcompiler_47.dll, incluido con .NET 8)."
+ ],
+ "Substitutions de DLL Wine": [
+  "Wine DLL overrides",
+  "Sostituzioni di DLL di Wine",
+  "Sustituciones de DLL de Wine"
+ ],
+ "Déclare {dlls} en « native,builtin » dans le registre de la bouteille pour que le jeu charge les DLL de son dossier.": [
+  "Sets {dlls} to “native,builtin” in the bottle’s registry so the game loads the DLLs from its folder.",
+  "Dichiara {dlls} come «native,builtin» nel registro della bottiglia perché il gioco carichi le DLL della sua cartella.",
+  "Declara {dlls} como «native,builtin» en el registro de la botella para que el juego cargue las DLL de su carpeta."
+ ],
+ "Terrain Helper : Bottled Shaders l’intègre déjà.": [
+  "Terrain Helper: Bottled Shaders already includes it.",
+  "Terrain Helper: Bottled Shaders lo include già.",
+  "Terrain Helper: Bottled Shaders ya lo incluye."
+ ],
+ "Inverse Square Lighting : Bottled Shaders l’intègre déjà.": [
+  "Inverse Square Lighting: Bottled Shaders already includes it.",
+  "Inverse Square Lighting: Bottled Shaders lo include già.",
+  "Inverse Square Lighting: Bottled Shaders ya lo incluye."
+ ],
+ "EVLaS : Bottled Shaders l’intègre déjà.": [
+  "EVLaS: Bottled Shaders already includes it.",
+  "EVLaS: Bottled Shaders lo include già.",
+  "EVLaS: Bottled Shaders ya lo incluye."
+ ],
+ "Aucune bouteille CrossOver trouvée : ce correctif concerne la bouteille.": [
+  "No CrossOver bottle found: this fix concerns the bottle.",
+  "Nessuna bottiglia CrossOver trovata: questa correzione riguarda la bottiglia.",
+  "No se encontró ninguna botella de CrossOver: esta corrección afecta a la botella."
+ ],
+ "La bouteille n’est pas une bouteille CrossOver : son moteur graphique se règle à la main.": [
+  "The bottle is not a CrossOver bottle: its graphics engine is set by hand.",
+  "La bottiglia non è una bottiglia CrossOver: il suo motore grafico si imposta a mano.",
+  "La botella no es de CrossOver: su motor gráfico se ajusta a mano."
+ ],
+ "Le pont mDLSS est introuvable (mO2FLATTENER ne l’embarque pas). Installez mORTEX, qui le fournit, puis relancez l’assemblage.": [
+  "The mDLSS bridge was not found (mO2FLATTENER does not bundle it). Install mORTEX, which provides it, then run the assembly again.",
+  "Il ponte mDLSS non è stato trovato (mO2FLATTENER non lo include). Installa mORTEX, che lo fornisce, poi rilancia l’assemblaggio.",
+  "No se encuentra el puente mDLSS (mO2FLATTENER no lo incluye). Instale mORTEX, que lo proporciona, y vuelva a lanzar el ensamblaje."
+ ],
+ ".NET 8 n’est pas installé dans la bouteille : le compilateur de Microsoft ne peut pas être posé.": [
+  ".NET 8 is not installed in the bottle: Microsoft’s compiler cannot be put in place.",
+  ".NET 8 non è installato nella bottiglia: il compilatore di Microsoft non può essere messo.",
+  ".NET 8 no está instalado en la botella: no se puede colocar el compilador de Microsoft."
+ ],
+ "Ce jeu n’a ni Community Shaders ni Bottled Shaders.": [
+  "This game has neither Community Shaders nor Bottled Shaders.",
+  "Questo gioco non ha né Community Shaders né Bottled Shaders.",
+  "Este juego no tiene ni Community Shaders ni Bottled Shaders."
+ ],
+ "Ce jeu a le Community Shaders d’origine, pas Bottled Shaders : il ne fonctionne pas sur Mac. Remplacez-le par Bottled Shaders.": [
+  "This game has the original Community Shaders, not Bottled Shaders: it does not work on a Mac. Replace it with Bottled Shaders.",
+  "Questo gioco ha il Community Shaders originale, non Bottled Shaders: non funziona su Mac. Sostituiscilo con Bottled Shaders.",
+  "Este juego tiene el Community Shaders original, no Bottled Shaders: no funciona en Mac. Sustitúyalo por Bottled Shaders."
+ ],
+ "Bottled Shaders {version} : à jour.": [
+  "Bottled Shaders {version}: up to date.",
+  "Bottled Shaders {version}: aggiornato.",
+  "Bottled Shaders {version}: al día."
+ ],
+ "Bottled Shaders {version} : à mettre à jour (au moins {minimum}).": [
+  "Bottled Shaders {version}: needs an update (at least {minimum}).",
+  "Bottled Shaders {version}: da aggiornare (almeno {minimum}).",
+  "Bottled Shaders {version}: hay que actualizarlo (al menos {minimum})."
+ ],
+ "La version de Bottled Shaders est illisible : vérifiez qu’elle est au moins {minimum}.": [
+  "The Bottled Shaders version cannot be read: check that it is at least {minimum}.",
+  "La versione di Bottled Shaders non è leggibile: verifica che sia almeno la {minimum}.",
+  "No se puede leer la versión de Bottled Shaders: compruebe que sea al menos la {minimum}."
+ ],
+ "Appliqué.": [
+  "Applied.",
+  "Applicata.",
+  "Aplicada."
+ ],
+ "Non appliqué : {file} a changé depuis l’annonce.": [
+  "Not applied: {file} changed since the announcement.",
+  "Non applicata: {file} è cambiato dopo l’annuncio.",
+  "No aplicada: {file} ha cambiado desde el anuncio."
+ ],
+ "Échec : ce que le correctif avait écrit a été remis.": [
+  "Failed: what the fix had written was put back.",
+  "Errore: quanto la correzione aveva scritto è stato ripristinato.",
+  "Fallo: lo que la corrección había escrito se ha restituido."
+ ],
+ "Annulé : les fichiers d’origine sont revenus.": [
+  "Undone: the original files are back.",
+  "Annullata: i file originali sono tornati.",
+  "Deshecha: los archivos originales han vuelto."
+ ],
+ "Ce correctif n’est pas dans la sauvegarde.": [
+  "This fix is not in the backup.",
+  "Questa correzione non è nel backup.",
+  "Esta corrección no está en la copia de seguridad."
+ ],
+ "Non annulé : {file} a changé depuis.": [
+  "Not undone: {file} has changed since.",
+  "Non annullata: {file} è cambiato nel frattempo.",
+  "No deshecha: {file} ha cambiado desde entonces."
+ ],
+ "Non annulé : la copie d’origine de {file} est introuvable.": [
+  "Not undone: the original copy of {file} is missing.",
+  "Non annullata: la copia originale di {file} non si trova.",
+  "No deshecha: falta la copia original de {file}."
+ ],
+ "Appel mal formé.": [
+  "Malformed call.",
+  "Chiamata malformata.",
+  "Llamada mal formada."
+ ],
+ "Dossier du jeu introuvable : {game}": [
+  "Game folder not found: {game}",
+  "Cartella del gioco non trovata: {game}",
+  "Carpeta del juego no encontrada: {game}"
+ ],
+ "Bouteille introuvable : {bottle}": [
+  "Bottle not found: {bottle}",
+  "Bottiglia non trovata: {bottle}",
+  "Botella no encontrada: {bottle}"
+ ],
+ "Plan illisible ou dangereux : rien n’a été écrit.": [
+  "Unreadable or unsafe plan: nothing was written.",
+  "Piano illeggibile o pericoloso: non è stato scritto nulla.",
+  "Plan ilegible o peligroso: no se ha escrito nada."
+ ],
+ "Erreur de l’adaptation au Mac.": [
+  "Mac adaptation error.",
+  "Errore dell’adattamento al Mac.",
+  "Error de la adaptación al Mac."
+ ],
+ "Version {v} ({b})": [
+  "Version {v} ({b})",
+  "Versione {v} ({b})",
+  "Versión {v} ({b})"
+ ],
+ "Licence MIT. © 2026 Starbudweiser.": [
+  "MIT License. © 2026 Starbudweiser.",
+  "Licenza MIT. © 2026 Starbudweiser.",
+  "Licencia MIT. © 2026 Starbudweiser."
+ ],
+ "Fourni en l'état, sans garantie d'aucune sorte.": [
+  "Provided as is, without warranty of any kind.",
+  "Fornito così com'è, senza garanzie di alcun tipo.",
+  "Se proporciona tal cual, sin garantía de ningún tipo."
+ ],
+ "Langue": [
+  "Language",
+  "Lingua",
+  "Idioma"
+ ],
+ "Fenêtre": [
+  "Window",
+  "Finestra",
+  "Ventana"
+ ],
+ "À propos de mO2FLATTENER": [
+  "About mO2FLATTENER",
+  "Informazioni su mO2FLATTENER",
+  "Acerca de mO2FLATTENER"
+ ],
+ "Masquer mO2FLATTENER": [
+  "Hide mO2FLATTENER",
+  "Nascondi mO2FLATTENER",
+  "Ocultar mO2FLATTENER"
+ ],
+ "Quitter mO2FLATTENER": [
+  "Quit mO2FLATTENER",
+  "Esci da mO2FLATTENER",
+  "Salir de mO2FLATTENER"
+ ],
+ "Assemble une instance Mod Organizer 2 en un dossier de jeu Skyrim SE/AE prêt à l'emploi, avec adaptation au Mac.": [
+  "Flattens a Mod Organizer 2 instance into a ready-to-play Skyrim SE/AE game folder, with Mac adaptation.",
+  "Assembla un'istanza Mod Organizer 2 in una cartella di gioco Skyrim SE/AE pronta all'uso, con adattamento al Mac.",
+  "Ensambla una instancia de Mod Organizer 2 en una carpeta de juego de Skyrim SE/AE lista para usar, con adaptación al Mac."
+ ],
+ "Automatique (système)": [
+  "Automatic (system)",
+  "Automatica (sistema)",
+  "Automático (sistema)"
+ ],
+ "Copier": [
+  "Copy",
+  "Copia",
+  "Copiar"
+ ],
+ "Masquer les autres": [
+  "Hide Others",
+  "Nascondi altri",
+  "Ocultar otros"
+ ],
+ "Réduire": [
+  "Minimize",
+  "Riduci",
+  "Minimizar"
+ ],
+ "Tout afficher": [
+  "Show All",
+  "Mostra tutto",
+  "Mostrar todo"
+ ],
+ "Tout sélectionner": [
+  "Select All",
+  "Seleziona tutto",
+  "Seleccionar todo"
+ ],
+ "Édition": [
+  "Edit",
+  "Modifica",
+  "Edición"
+ ],
+ "Couper": [
+  "Cut",
+  "Taglia",
+  "Cortar"
+ ],
+ "Coller": [
+  "Paste",
+  "Incolla",
+  "Pegar"
+ ],
+ "\n[ERREUR CRITIQUE] {err}": [
+  "\n[CRITICAL ERROR] {err}",
+  "\n[ERRORE CRITICO] {err}",
+  "\n[ERROR CRÍTICO] {err}"
+ ]
+}
