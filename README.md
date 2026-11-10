@@ -2,6 +2,8 @@
 
 # mO2FLATTENER
 
+[![Listed on OpenMacApps](https://openmacapps.com/badge.svg)](https://openmacapps.com/apps/mo2flattener/)
+
 **Turns a Mod Organizer 2 instance into a ready-to-play Skyrim folder (no virtual file system needed).**  
 *Transforme une instance Mod Organizer 2 en dossier Skyrim prêt à jouer (sans système de fichiers virtuel).*
 
