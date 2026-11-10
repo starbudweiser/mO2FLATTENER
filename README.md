@@ -2,25 +2,21 @@
 
 # mO2FLATTENER
 
-[![Listed on OpenMacApps](https://openmacapps.com/badge.svg)](https://openmacapps.com/apps/mo2flattener/)
+[![Listed on OpenMacApps](https://openmacapps.com/badge.svg)](https://openmacapps.com/apps/mo2flattener/) [![Latest release](https://img.shields.io/github/v/release/starbudweiser/mO2FLATTENER)](https://github.com/starbudweiser/mO2FLATTENER/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**Turns a Mod Organizer 2 instance into a ready-to-play Skyrim folder (no virtual file system needed).**  
-*Transforme une instance Mod Organizer 2 en dossier Skyrim prêt à jouer (sans système de fichiers virtuel).*
+**Turns a Mod Organizer 2 instance into a ready-to-play Skyrim folder (no virtual file system needed).**
 
-🍏 **Native Mac app written in Swift, signed and notarized by Apple.** · *Appli Mac native écrite en Swift, signée et notarisée par Apple.*
+🇬🇧 English · 🇫🇷 [Français](#français)
 
-🇬🇧 [English](#-english) · 🇫🇷 [Français](#-français)
+## About
 
-💬 **Support & community:** [Discord](https://discord.gg/xdDVDPQsYs) · *Aide et communauté : [Discord](https://discord.gg/xdDVDPQsYs)*
+mO2FLATTENER — Turns a Mod Organizer 2 instance into a ready-to-play Skyrim folder (no virtual file system needed). By Starbudweiser & Claude Code (Anthropic). MIT License, © 2026 Starbudweiser. Provided as is, without warranty of any kind. See **About mO2FLATTENER** in the app menu.
 
----
-## 🇬🇧 English
-
-### What it does
+🍏 **Native Mac app written in Swift, signed and notarized by Apple.**
 
 Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads your MO2 instance and its modlist.txt, resolves file conflicts in priority order and copies (or hard-links) the winning files into a real game folder you can launch with CrossOver.
 
-### Features
+## Features
 
 - Reads the MO2 instance, its profiles and **modlist.txt** priority order (bottom wins, like MO2).
 - Conflict resolution in RAM, then fast **multi-threaded copy** of the unique final files.
@@ -45,14 +41,14 @@ Mod Organizer 2's virtual file system doesn't work on a Mac. mO2FLATTENER reads 
 - The first letter of the app's name now uses the colour of its logo everywhere it appears.
 - Version number aligned across the Skyrim Mac Toolkit.
 
-### Updates
-
-The app checks once a day whether a newer release exists on GitHub, shows its notes in your language and offers to install it and relaunch (or to remind you later or skip that version). The download is checked (SHA-256, Developer ID signature, notarization) before it replaces the app. "Check for updates…" in the menu does the same on demand. The full history is in [CHANGELOG.md](CHANGELOG.md).
-
 ### Screenshots
 
 ![Assembly of an MO2 instance with its log](docs/screenshots/02_assembly.png)
 *Assembly of an MO2 instance with its log*
+
+## Install
+
+**[Download the latest notarized release](https://github.com/starbudweiser/mO2FLATTENER/releases/latest)** · requires **macOS 15 Sequoia** or later on Apple Silicon.
 
 ### Requirements
 
@@ -70,12 +66,11 @@ A Mac with **Apple Silicon** (M1 or later), **macOS 15 Sequoia** or later. Nativ
 3. Optionally tick plugins.txt / INI deployment and pick their destination.
 4. Click **START COMPLETE ASSEMBLY** and follow the log.
 
-### FAQ
+### Updates
 
-**Should I use hard links?**  
-Only if the MO2 instance and the target folder are on the same disk. Otherwise use a full copy.
+The app checks once a day whether a newer release exists on GitHub, shows its notes in your language and offers to install it and relaunch (or to remind you later or skip that version). The download is checked (SHA-256, Developer ID signature, notarization) before it replaces the app. "Check for updates…" in the menu does the same on demand. The full history is in [CHANGELOG.md](CHANGELOG.md).
 
-### Building from source
+## Build
 
 Requires macOS 15 and the Swift 6 toolchain (Xcode or Command Line Tools). The `mackit` tool of the shared Mac engine is embedded if found (`MACKIT_BIN=<path>` otherwise). From the repository folder:
 
@@ -83,13 +78,32 @@ Requires macOS 15 and the Swift 6 toolchain (Xcode or Command Line Tools). The `
 ./build_app.sh
 ```
 
-### License
+## Languages
 
-Released under the **MIT License**: free to use, modify and share. Part of the **Skyrim Mac Toolkit**, a set of modding tools built for Skyrim players on Mac.
+English, French, Spanish and Italian. The app follows your Mac's preferred language automatically (English if it is none of these four).
+
+## Support
+
+💬 Help and community: [Skyrim Mac Toolkit Discord](https://discord.gg/jRS4rvynx6) · bug reports: [GitHub Issues](https://github.com/starbudweiser/mO2FLATTENER/issues).
+
+### FAQ
+
+**Should I use hard links?**  
+Only if the MO2 instance and the target folder are on the same disk. Otherwise use a full copy.
+
+## License
+
+Released under the **MIT License**: free to use, modify and share. Part of the **Skyrim Mac Toolkit**, a set of modding tools built for Skyrim players on Mac. See [LICENSE](LICENSE).
 
 ---
 
-## 🇫🇷 Français
+## Français
+
+**Transforme une instance Mod Organizer 2 en dossier Skyrim prêt à jouer (sans système de fichiers virtuel).**
+
+🍏 *Appli Mac native écrite en Swift, signée et notarisée par Apple.*
+
+💬 Aide et communauté : [Discord du Skyrim Mac Toolkit](https://discord.gg/jRS4rvynx6)
 
 ### À quoi ça sert
 
