@@ -2,6 +2,16 @@
 
 Notes de version / release notes (EN + FR). Translations in IT and ES: see the Nexus Mods page.
 
+## 2.0.1
+
+**English**
+
+- Drives formatted exFAT or FAT: the hidden "._" files macOS creates there (and .DS_Store, __MACOSX folders) are no longer copied into the flattened game, and copying to such a drive no longer creates new ones. SKSE tried to load them as plugins ("._EngineFixes.dll") and Skyrim crashed.
+
+**Français**
+
+- Disques formatés en exFAT ou FAT : les fichiers cachés « ._ » que macOS y crée (et les .DS_Store, dossiers __MACOSX) ne sont plus copiés dans le jeu aplati, et la copie vers un tel disque n'en crée plus de nouveaux. SKSE essayait de les charger comme plugins (« ._EngineFixes.dll ») et Skyrim plantait.
+
 ## 2.0.0
 
 **English**

@@ -11,7 +11,7 @@ import Foundation
 
 public enum Rules {
     public static let ignoredFiles: Set<String> = ["meta.ini"]
-    public static let ignoredDirs: Set<String> = [".git", ".svn", "__pycache__"]
+    public static let ignoredDirs: Set<String> = [".git", ".svn", "__pycache__", "__macosx"]
     public static let ignoredExtensions: Set<String> = [".pdb", ".mohidden"]
 
     /// Extensions parasites à ignorer directement à la racine de Data
@@ -32,8 +32,27 @@ public struct FlatTask: Equatable, Sendable {
     public init(src: String, dst: String) { self.src = src; self.dst = dst }
 }
 
+/// Fichiers que macOS dépose tout seul, jamais des fichiers de mod : `.DS_Store`, et `._nom`, où macOS range les
+/// attributs étendus de « nom » sur un disque qui n'en a pas (exFAT, FAT, partage réseau). Copié dans Data, Wine le
+/// voit comme un vrai fichier : SKSE essayait de charger « ._EngineFixes.dll » et le jeu plantait (constaté par
+/// SkyrimMT, ticket GitHub #16). Ignorés partout, pas seulement à la racine de Data.
+public func isMacMetadataFile(_ filename: String) -> Bool {
+    filename.hasPrefix("._") || filename.lowercased() == ".ds_store"
+}
+
+/// Le volume garde-t-il les attributs étendus dans le système de fichiers (APFS, HFS+) ? Sinon, écrire un attribut
+/// crée un fichier « ._nom » visible à côté du fichier.
+public func hasNativeAttributes(_ path: String) -> Bool {
+    var s = statfs()
+    guard statfs(path, &s) == 0 else { return true }
+    let type = withUnsafePointer(to: &s.f_fstypename) {
+        $0.withMemoryRebound(to: CChar.self, capacity: Int(MFSTYPENAMELEN)) { String(cString: $0) }
+    }
+    return type == "apfs" || type == "hfs"
+}
+
 public func isIgnoredFile(_ filename: String, isDataRoot: Bool = false) -> Bool {
-    if Rules.ignoredFiles.contains(filename) { return true }
+    if Rules.ignoredFiles.contains(filename) || isMacMetadataFile(filename) { return true }
     let lower = filename.lowercased()
     if lower.hasSuffix(".mohidden") { return true }
     let ext = pySplitExt(lower).ext
@@ -212,11 +231,12 @@ func makeDirs(_ path: String) throws {
     catch { throw PyOSError(errno != 0 ? errno : EACCES, path) }
 }
 
-/// `shutil.copystat` : droits, dates, drapeaux et attributs étendus.
+/// `shutil.copystat` : droits, dates, drapeaux et attributs étendus. Pas d'attributs vers un disque exFAT ou FAT :
+/// macOS les écrirait dans un fichier « ._nom » que le jeu prendrait pour un fichier de mod.
 func copyStat(_ src: String, _ dst: String) {
     var st = stat()
     guard stat(src, &st) == 0 else { return }
-    _ = copyfile(src, dst, nil, copyfile_flags_t(COPYFILE_XATTR))
+    if hasNativeAttributes(dst) { _ = copyfile(src, dst, nil, copyfile_flags_t(COPYFILE_XATTR)) }
     var times = [st.st_atimespec, st.st_mtimespec]
     _ = utimensat(AT_FDCWD, dst, &times, 0)
     _ = chmod(dst, st.st_mode & 0o7777)

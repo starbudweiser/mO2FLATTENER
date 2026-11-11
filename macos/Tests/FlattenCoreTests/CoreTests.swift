@@ -91,7 +91,11 @@ final class CoreTests: XCTestCase {
     func testIgnoreRules() {
         XCTAssertTrue(isIgnoredFile("meta.ini")); XCTAssertFalse(isIgnoredFile("META.INI"))
         XCTAssertTrue(isIgnoredFile("a.PDB")); XCTAssertTrue(isIgnoredFile("readme.TXT", isDataRoot: true))
-        XCTAssertFalse(isIgnoredFile("readme.txt")); XCTAssertFalse(isIgnoredFile(".ds_store", isDataRoot: true))  // splitext : pas d'extension
+        XCTAssertFalse(isIgnoredFile("readme.txt")); XCTAssertTrue(isIgnoredFile(".ds_store", isDataRoot: true))  // fichier du Finder, ignoré partout
+        // fichiers « ._ » des disques exFAT et dossier __MACOSX : jamais copiés (plantage SKSE sur « ._xxx.dll »)
+        XCTAssertTrue(isIgnoredFile("._EngineFixes.dll")); XCTAssertTrue(isIgnoredFile(".DS_Store"))
+        XCTAssertFalse(isIgnoredFile("_patch.esp")); XCTAssertFalse(isIgnoredFile(".hidden.ini"))
+        XCTAssertTrue(isIgnoredDir("__MACOSX"))
         XCTAssertTrue(isIgnoredDir("FOMOD")); XCTAssertTrue(isIgnoredDir("x.mohidden")); XCTAssertFalse(isIgnoredDir("Textures"))
         XCTAssertEqual(pySplitExt("a.b.c").ext, ".c"); XCTAssertEqual(pySplitExt(".hidden").ext, ""); XCTAssertEqual(pySplitExt("..x.y").ext, ".y")
     }
