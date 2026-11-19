@@ -185,6 +185,12 @@ let translations: [String: [String]] = [
     "Couper": ["Cut", "Taglia", "Cortar"],
     "Coller": ["Paste", "Incolla", "Pegar"],
     "\n[ERREUR CRITIQUE] {err}": ["\n[CRITICAL ERROR] {err}", "\n[ERRORE CRITICO] {err}", "\n[ERROR CRÍTICO] {err}"],
+    "{n} octet": ["{n} byte", "{n} byte", "{n} byte"],
+    "{n} octets": ["{n} bytes", "{n} byte", "{n} bytes"],
+    "mackit introuvable": ["mackit not found", "mackit non trovato", "mackit no encontrado"],
+    "La commande '{cmd}' n'a pas répondu après {s} secondes": ["The command '{cmd}' did not respond after {s} seconds", "Il comando '{cmd}' non ha risposto dopo {s} secondi", "El comando '{cmd}' no respondió tras {s} segundos"],
+    "sortie inattendue": ["unexpected output", "output inatteso", "salida inesperada"],
+    "plan non sérialisable": ["plan not serializable", "piano non serializzabile", "plan no serializable"],
 ]
 
 /// Identifiant d'un texte (« card3_title », « mackit.fix.engine.title »…) -> texte français, clé de `translations`.

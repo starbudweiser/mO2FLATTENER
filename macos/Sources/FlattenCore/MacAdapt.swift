@@ -76,7 +76,7 @@ public enum MacAdapt {
     /// Lance `mackit <args> --json --state <fichier>` et renvoie son JSON (code 0 ou 1) ; ne lève jamais. Un outil qui ne
     /// répond plus est arrêté au bout de `timeout` secondes : l'assemblage n'attend jamais indéfiniment.
     public static func run(_ args: [String], stdin: String? = nil, timeout: TimeInterval = 300) -> Json {
-        guard let exe = mackitPath() else { return failure(detail: "mackit not found", unavailable: true) }
+        guard let exe = mackitPath() else { return failure(detail: L("mackit introuvable"), unavailable: true) }
         let argv = args + ["--json", "--state", stateFile()]
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: exe)
@@ -105,7 +105,7 @@ public enum MacAdapt {
             proc.terminate()
             _ = finished.wait(timeout: .now() + 5)
             if proc.isRunning { kill(proc.processIdentifier, SIGKILL) }
-            return failure(detail: "Command '\(([exe] + argv).joined(separator: " "))' timed out after \(Int(timeout)) seconds")
+            return failure(detail: L("La commande '{cmd}' n'a pas répondu après {s} secondes", ["cmd": ([exe] + argv).joined(separator: " "), "s": Int(timeout)]))
         }
         group.wait()
         let stdout = String(decoding: outData, as: UTF8.self)
@@ -116,7 +116,7 @@ public enum MacAdapt {
             let detail = !stderr.isEmpty ? stderr : (!stdout.isEmpty ? stdout : "exit \(proc.terminationStatus)")
             return failure(detail: String(detail.prefix(300)))
         }
-        guard var dict = parsed as? Json else { return failure(detail: "unexpected output") }
+        guard var dict = parsed as? Json else { return failure(detail: L("sortie inattendue")) }
         let code = proc.terminationStatus
         if code != 0 && code != 1 { dict["ok"] = false }  // 2 = appel mal formé : un défaut de l'appli, pas du jeu
         return dict
@@ -343,7 +343,7 @@ public enum MacAdapt {
         var args = ["apply", "--plan", "-"]
         if let only, !only.isEmpty { args += ["--only", only.joined(separator: ",")] }
         guard let data = try? JSONSerialization.data(withJSONObject: planObj, options: [.withoutEscapingSlashes]) else {
-            return failure(detail: "plan not serializable")
+            return failure(detail: L("plan non sérialisable"))
         }
         return run(args, stdin: String(decoding: data, as: UTF8.self))
     }
